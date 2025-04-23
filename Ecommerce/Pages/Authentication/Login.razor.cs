@@ -28,6 +28,10 @@ public partial class Login : ComponentBase
                 //    _snackBar.Add(message, Severity.Error);
                 //}
             }
+            else
+            {
+                _navigationManager.Refresh();
+            }
         }
         catch (Exception ex)
         {
@@ -37,7 +41,7 @@ public partial class Login : ComponentBase
 
     private void FillAdministratorCredentials()
     {
-        _tokenModel.Email = "mukesh@blazorhero.com";
+        _tokenModel.Email = "superadmin@gmail.com";
         _tokenModel.Password = "123Pa$$word!";
     }
 }
