@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using SharedLibrary.Requests.Identity;
 
-namespace Ecommerce.Pages;
+namespace Ecommerce.Pages.Authentication;
 
 public partial class Login : ComponentBase
 {
@@ -33,5 +33,11 @@ public partial class Login : ComponentBase
         {
             Console.WriteLine($"Login error: {ex.Message}");
         }
+    }
+
+    private void FillAdministratorCredentials()
+    {
+        _tokenModel.Email = "mukesh@blazorhero.com";
+        _tokenModel.Password = "123Pa$$word!";
     }
 }
