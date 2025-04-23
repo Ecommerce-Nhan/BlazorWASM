@@ -1,5 +1,6 @@
 ﻿@using Ecommerce.Layout.Menu
 @inherits LayoutComponentBase
+@implements IDisposable
 
 <AuthorizeView>
     <NotAuthorized>
@@ -11,3 +12,16 @@
         </MainBody>
     </Authorized>
 </AuthorizeView>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        _interceptor.RegisterEvent();
+        await base.OnInitializedAsync();
+    }
+
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
+}

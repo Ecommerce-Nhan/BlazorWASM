@@ -1,6 +1,5 @@
 ﻿using Blazored.LocalStorage;
 using SharedLibrary.Constants.Storage;
-using SharedLibrary.Response;
 using System.Net.Http.Headers;
 
 namespace ECommerce.Infrastructure.Authentication;
@@ -16,7 +15,7 @@ public class AuthenticationHeaderHandler : DelegatingHandler
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        if (request.Headers.Authorization?.Scheme != "Bearer")
+        if (request.Headers?.Authorization?.Scheme != "Bearer")
         {
             var savedToken = await this.localStorage.GetItemAsync<string>(StorageConstants.Local.AuthToken);
 
