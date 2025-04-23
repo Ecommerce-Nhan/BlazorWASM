@@ -11,4 +11,6 @@ public interface IAuthenticationManager : IManager
     Task<IResponse> Logout();
 
     Task<ClaimsPrincipal> CurrentUser();
+
+    Task RefreshTokenAsync();
 }
