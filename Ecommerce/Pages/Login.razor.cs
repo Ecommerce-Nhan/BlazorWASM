@@ -1,0 +1,37 @@
+﻿using Microsoft.AspNetCore.Components;
+using SharedLibrary.Requests.Identity;
+
+namespace Ecommerce.Pages;
+
+public partial class Login : ComponentBase
+{
+    private TokenRequest _tokenModel = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await _stateProvider.GetAuthenticationStateAsync();
+        if (state.User.Identity?.IsAuthenticated == true)
+        {
+            _navigationManager.NavigateTo("/");
+        }
+    }
+
+    private async Task SubmitAsync()
+    {
+        try
+        {
+            var result = await _authenticationManager.Login(_tokenModel);
+            if (!result.Succeeded)
+            {
+                //foreach (var message in result.Messages)
+                //{
+                //    _snackBar.Add(message, Severity.Error);
+                //}
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Login error: {ex.Message}");
+        }
+    }
+}

@@ -1,0 +1,19 @@
+﻿@using Ecommerce.Layout.Menu
+@inherits LayoutComponentBase
+
+<SidebarMenu></SidebarMenu>
+<main class="w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-200 min-h-screen transition-all main">
+    <NavbarMenu></NavbarMenu>
+    <div class="p-6">
+        @Body
+    </div>
+</main>
+
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}
