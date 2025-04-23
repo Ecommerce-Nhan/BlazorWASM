@@ -1,5 +1,6 @@
 ﻿using ECommerce.Infrastructure.Managers.Identity.Authentication;
 using Microsoft.AspNetCore.Components;
+using System.Net.Http.Headers;
 using Toolbelt.Blazor;
 
 namespace ECommerce.Infrastructure.Managers.Interceptors;
@@ -29,11 +30,11 @@ public class HttpInterceptorManager : IHttpInterceptorManager
         {
             try
             {
-                //var token = await _authenticationManager.RefreshTokenAsync();
-                //if (!string.IsNullOrEmpty(token))
-                //{
-                //    e.Request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                //}
+                var token = await _authenticationManager.RefreshTokenAsync();
+                if (!string.IsNullOrEmpty(token))
+                {
+                    e.Request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
             }
             catch (Exception ex)
             {

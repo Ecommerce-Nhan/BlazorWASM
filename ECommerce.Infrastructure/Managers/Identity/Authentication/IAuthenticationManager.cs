@@ -12,5 +12,7 @@ public interface IAuthenticationManager : IManager
 
     Task<ClaimsPrincipal> CurrentUser();
 
-    Task RefreshTokenAsync();
+    Task<string> RefreshTokenAsync();
+
+    Task<string> TryRefreshToken();
 }

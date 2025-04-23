@@ -76,7 +76,7 @@ public class AuthenticationManager : IAuthenticationManager
         return await Response.SuccessAsync();
     }
 
-    public async Task RefreshTokenAsync()
+    public async Task<string> RefreshTokenAsync()
     {
         var refreshToken = await _localStorage.GetItemAsync<string>(StorageConstants.Local.RefreshToken);
 
@@ -93,6 +93,10 @@ public class AuthenticationManager : IAuthenticationManager
         if (response.IsSuccessStatusCode && responseData is TokenResponse)
         {
             await _localStorage.SetItemAsync(StorageConstants.Local.AuthToken, responseData.Access_Token);
+            await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, responseData.Refresh_Token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", responseData.Access_Token);
+
+            return responseData.Access_Token;
         }
         else
         {
@@ -100,13 +104,18 @@ public class AuthenticationManager : IAuthenticationManager
         }
     }
 
-    public async Task<string> GetAccessTokenAsync()
+    public async Task<string> TryRefreshToken()
     {
-        return await _localStorage.GetItemAsync<string>(StorageConstants.Local.AuthToken) ?? string.Empty;
-    }
-
-    public bool IsTokenExpired(string accessToken)
-    {
-        return false;
+        var availableToken = await _localStorage.GetItemAsync<string>(StorageConstants.Local.RefreshToken);
+        if (string.IsNullOrEmpty(availableToken)) return string.Empty;
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var exp = user.FindFirst(c => c.Type.Equals("exp"))?.Value;
+        var expTime = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(exp));
+        var timeUTC = DateTime.UtcNow;
+        var diff = expTime - timeUTC;
+        if (diff.TotalMinutes <= 1)
+            return await RefreshTokenAsync();
+        return string.Empty;
     }
 }
