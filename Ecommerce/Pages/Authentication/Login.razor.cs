@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using SharedLibrary.Requests.Identity;
 
 namespace Ecommerce.Pages.Authentication;
 
 public partial class Login : ComponentBase
 {
+    [Inject] private ILogger<Login> _logger { get; set; } = default!;
     private TokenRequest _tokenModel = new();
 
     protected override async Task OnInitializedAsync()
@@ -23,10 +25,10 @@ public partial class Login : ComponentBase
             var result = await _authenticationManager.Login(_tokenModel);
             if (!result.Succeeded)
             {
-                //foreach (var message in result.Messages)
-                //{
-                //    _snackBar.Add(message, Severity.Error);
-                //}
+                foreach (var message in result.Errors ?? [])
+                {
+                    _snackBar.Add(message, Severity.Error);
+                }
             }
             else
             {
@@ -35,7 +37,8 @@ public partial class Login : ComponentBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Login error: {ex.Message}");
+            _snackBar.Add($"Server error.", Severity.Error);
+            _logger.LogError($"Login failed {ex.Message}");
         }
     }
 

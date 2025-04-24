@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor;
+using MudBlazor.Services;
 using SharedLibrary.Constants.Permission;
 using System.Globalization;
 using System.Net.Http;
@@ -33,6 +35,14 @@ public static class WebAssemblyHostBuilderExtensions
                    RegisterPermissionClaims(options);
                })
                .AddBlazoredLocalStorage()
+               .AddMudServices(configuration =>
+               {
+                   configuration.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopRight;
+                   configuration.SnackbarConfiguration.HideTransitionDuration = 100;
+                   configuration.SnackbarConfiguration.ShowTransitionDuration = 100;
+                   configuration.SnackbarConfiguration.VisibleStateDuration = 3000;
+                   configuration.SnackbarConfiguration.ShowCloseIcon = false;
+               })
                .AddScoped<ECommerceStateProvider>()
                .AddScoped<AuthenticationStateProvider, ECommerceStateProvider>()
                .AddManagers()
