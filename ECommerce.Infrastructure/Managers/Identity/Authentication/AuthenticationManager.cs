@@ -54,6 +54,9 @@ public class AuthenticationManager : IAuthenticationManager
             var refreshToken = responseData.Refresh_Token;
             await _localStorage.SetItemAsync(StorageConstants.Local.AuthToken, token);
             await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, refreshToken);
+            var payload = await _httpClient.PostAsJsonAsync(TokenEndpoints.Payload, token);
+            var jwt = await payload.Content.ReadAsStringAsync();
+            await _localStorage.SetItemAsync(StorageConstants.Local.PayloadToken, jwt);
 
             await ((ECommerceStateProvider)this._authenticationStateProvider).StateChangedAsync();
 
@@ -71,6 +74,7 @@ public class AuthenticationManager : IAuthenticationManager
     {
         await _localStorage.RemoveItemAsync(StorageConstants.Local.AuthToken);
         await _localStorage.RemoveItemAsync(StorageConstants.Local.RefreshToken);
+        await _localStorage.RemoveItemAsync(StorageConstants.Local.PayloadToken);
         ((ECommerceStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
         _httpClient.DefaultRequestHeaders.Authorization = null;
         return await Response.SuccessAsync();

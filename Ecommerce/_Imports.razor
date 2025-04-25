@@ -11,20 +11,25 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using MudBlazor
 
+@using SharedLibrary.Constants.Permission
+
 @using Ecommerce
 @using Ecommerce.Layout
 @using Ecommerce.Layout.Menu
 @using Ecommerce.Pages.Authentication
 
 @using ECommerce.Infrastructure.Authentication
-@using ECommerce.Infrastructure.Managers.Identity.Authentication
+@using ECommerce.Infrastructure.Managers.Admin.Users
 @using ECommerce.Infrastructure.Managers.Interceptors
+@using ECommerce.Infrastructure.Managers.Identity.Authentication
 
 @attribute [Authorize]
 @inject NavigationManager _navigationManager
 @inject ECommerceStateProvider _stateProvider
 @inject HttpClient _httpClient
+@inject IAuthorizationService _authorizationService
 @inject IAuthenticationManager _authenticationManager
+@inject IUserManager _userManager
 @inject IHttpInterceptorManager _interceptor
 @inject ILocalStorageService _localStorage
 @inject IJSRuntime _jsRuntime
