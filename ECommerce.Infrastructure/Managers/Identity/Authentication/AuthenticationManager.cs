@@ -41,7 +41,6 @@ public class AuthenticationManager : IAuthenticationManager
             { "grant_type", "password" },
             { "username", model.Email },
             { "password", model.Password },
-            { "scope", "offline_access" }
         };
 
         var content = new FormUrlEncodedContent(requestData);
@@ -52,11 +51,10 @@ public class AuthenticationManager : IAuthenticationManager
         {
             var token = responseData.Access_Token;
             var refreshToken = responseData.Refresh_Token;
+            var payloadToken = responseData.Payload_Token;
             await _localStorage.SetItemAsync(StorageConstants.Local.AuthToken, token);
             await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, refreshToken);
-            var payload = await _httpClient.PostAsJsonAsync(TokenEndpoints.Payload, token);
-            var jwt = await payload.Content.ReadAsStringAsync();
-            await _localStorage.SetItemAsync(StorageConstants.Local.PayloadToken, jwt);
+            await _localStorage.SetItemAsync(StorageConstants.Local.PayloadToken, payloadToken);
 
             await ((ECommerceStateProvider)this._authenticationStateProvider).StateChangedAsync();
 
