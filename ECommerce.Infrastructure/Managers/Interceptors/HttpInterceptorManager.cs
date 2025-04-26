@@ -39,7 +39,7 @@ public class HttpInterceptorManager : IHttpInterceptorManager
         {
             try
             {
-                var token = await _authenticationManager.RefreshTokenAsync();
+                var token = await _authenticationManager.TryRefreshToken();
                 if (!string.IsNullOrEmpty(token))
                 {
                     e.Request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
