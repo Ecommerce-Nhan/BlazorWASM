@@ -1,0 +1,22 @@
+﻿@page "/user"
+@using Ecommerce.Pages.User.Components
+@attribute [Authorize(Policy = Permissions.Users.View)]
+
+<section class="container px-4 mx-auto">
+    <div class="sm:flex sm:items-center sm:justify-between">
+        <div>
+            <div class="flex items-center gap-x-3">
+                <h2 class="text-lg font-medium text-gray-800 dark:text-white">Customers</h2>
+
+                <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">240 vendors</span>
+            </div>
+
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">These companies have purchased in the last 12 months.</p>
+        </div>
+
+        <UserCreateComponent></UserCreateComponent>
+    </div>
+
+    <UserFilterComponent></UserFilterComponent>
+    <UserTableComponent></UserTableComponent>
+</section>
