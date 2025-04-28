@@ -7,6 +7,6 @@ public partial class NavbarMenu : ComponentBase
     private async Task LogOut()
     {
         await _authenticationManager.Logout();
-        _navigationManager.NavigateTo("/login");
+        _navigationManager.NavigateTo("/admin/login");
     }
 }

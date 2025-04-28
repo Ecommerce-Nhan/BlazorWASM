@@ -1,11 +1,23 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="font-sans">
-    <div class="relative min-h-screen flex flex-col sm:justify-center items-center bg-gray-100 ">
-        <div class="relative sm:max-w-sm w-full">
-            <div class="card bg-blue-400 shadow-lg  w-full h-full rounded-3xl absolute  transform -rotate-6"></div>
-            <div class="card bg-red-400 shadow-lg  w-full h-full rounded-3xl absolute  transform rotate-6"></div>
+    <div class="relative flex min-h-screen flex-col items-center bg-gray-100 sm:justify-center">
+        <div class="relative w-full sm:max-w-sm">
+            <div class="card -rotate-6 absolute h-full w-full transform rounded-3xl bg-blue-400 shadow-lg"></div>
+            <div class="card absolute h-full w-full rotate-6 transform rounded-3xl bg-red-400 shadow-lg"></div>
             @Body
         </div>
     </div>
 </div>
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _interceptor.RegisterEvent();
+    }
+
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
+}

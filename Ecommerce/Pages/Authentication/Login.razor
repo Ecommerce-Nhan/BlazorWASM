@@ -1,9 +1,9 @@
-﻿@page "/login"
+﻿@page "/admin/login"
 @layout AuthLayout
 @attribute [AllowAnonymous]
 
-<div class="relative w-full rounded-3xl px-6 py-4 bg-gray-100 shadow-md">
-    <label for="" class="block mt-3 text-sm text-gray-700 text-center font-semibold">
+<div class="relative w-full rounded-3xl bg-gray-100 px-6 py-4 shadow-md">
+    <label for="" class="mt-3 block text-center text-sm font-semibold text-gray-700">
         Login
     </label>
     <EditForm Model="@_tokenModel" OnValidSubmit="SubmitAsync" class="mt-10">
@@ -12,55 +12,55 @@
 
         <div>
             <InputText type="email" @bind-Value="_tokenModel.Email" placeholder="Email"
-                       class="mt-1 block w-full border-none bg-gray-100 h-11 rounded-xl shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0" />
+                       class="mt-1 block h-11 w-full rounded-xl border-none bg-gray-100 shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0" />
         </div>
 
         <div class="mt-7">
             <InputText type="password" @bind-Value="_tokenModel.Password" placeholder="Password"
-                       class="mt-1 block w-full border-none bg-gray-100 h-11 rounded-xl shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0" />
+                       class="mt-1 block h-11 w-full rounded-xl border-none bg-gray-100 shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0" />
         </div>
 
         <div class="mt-7 flex">
-            @* <label for="remember_me" class="inline-flex items-center w-full cursor-pointer">
+            @* <label for="remember_me" class="inline-flex w-full cursor-pointer items-center">
                 <InputCheckbox id="remember_me" @bind-Value="_tokenModel.RememberMe"
                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
                 <span class="ml-2 text-sm text-gray-600">Remember me</span>
             </label> *@
 
             <div class="w-full text-right">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="#">Forgot your password?</a>
+                <a class="text-sm text-gray-600 underline hover:text-gray-900" href="#">Forgot your password?</a>
             </div>
         </div>
 
         <div class="mt-7">
             <button type="submit"
-                    class="bg-blue-500 w-full py-3 rounded-xl text-white shadow-xl hover:shadow-inner focus:outline-none transition duration-500 ease-in-out transform hover:-translate-x hover:scale-105">
+                    class="w-full transform rounded-xl bg-blue-500 py-3 text-white shadow-xl transition duration-500 ease-in-out hover:shadow-inner hover:-translate-x hover:scale-105 focus:outline-none">
                 Login
             </button>
         </div>
 
-        <div class="flex mt-7 items-center text-center">
-            <hr class="border-gray-300 border-1 w-full rounded-md">
-            <label class="block font-medium text-sm text-gray-600 w-full">
+        <div class="mt-7 flex items-center text-center">
+            <hr class="border-1 w-full rounded-md border-gray-300">
+            <label class="block w-full text-sm font-medium text-gray-600">
                 Or login with
             </label>
-            <hr class="border-gray-300 border-1 w-full rounded-md">
+            <hr class="border-1 w-full rounded-md border-gray-300">
         </div>
 
-        <div class="flex mt-7 justify-center w-full">
-            <button class="mr-5 bg-blue-500 border-none px-4 py-2 rounded-xl cursor-pointer text-white shadow-xl hover:shadow-inner transition duration-500 ease-in-out transform hover:-translate-x hover:scale-105">
+        <div class="mt-7 flex w-full justify-center">
+            <button class="mr-5 transform cursor-pointer rounded-xl border-none bg-blue-500 px-4 py-2 text-white shadow-xl transition duration-500 ease-in-out hover:shadow-inner hover:-translate-x hover:scale-105">
                 Facebook
             </button>
 
-            <button class="bg-red-500 border-none px-4 py-2 rounded-xl cursor-pointer text-white shadow-xl hover:shadow-inner transition duration-500 ease-in-out transform hover:-translate-x hover:scale-105">
+            <button class="transform cursor-pointer rounded-xl border-none bg-red-500 px-4 py-2 text-white shadow-xl transition duration-500 ease-in-out hover:shadow-inner hover:-translate-x hover:scale-105">
                 Google
             </button>
         </div>
 
         <div class="mt-7">
-            <div class="flex justify-center items-center">
+            <div class="flex items-center justify-center">
                 <label class="mr-2">New here?</label>
-                <a href="register" class="text-blue-500 transition duration-500 ease-in-out transform hover:-translate-x hover:scale-105">
+                <a href="admin/register" class="transform text-blue-500 transition duration-500 ease-in-out hover:-translate-x hover:scale-105">
                     Create an account
                 </a>
             </div>
@@ -68,9 +68,9 @@
     </EditForm>
     <button type="button"
             @onclick="FillAdministratorCredentials"
-            class="mt-4 flex justify-center gap-2 items-center mx-auto shadow-xl text-lg bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-emerald-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-4 py-2 overflow-hidden border-2 rounded-full group">
+            class="group relative isolation-auto z-10 mx-auto mt-4 flex items-center justify-center gap-2 overflow-hidden rounded-full border-2 border-gray-50 bg-gray-50 px-4 py-2 text-lg shadow-xl backdrop-blur-md before:absolute before:w-full before:transition-all before:duration-700 before:-left-full before:rounded-full before:bg-emerald-500 before:-z-10 before:aspect-square hover:text-gray-50 lg:font-semibold before:hover:w-full before:hover:left-0 before:hover:scale-150 before:hover:duration-700">
         Fill Administrator Credentials
-        <svg class="w-8 h-8 justify-end group-hover:rotate-90 group-hover:bg-gray-50 text-gray-50 ease-linear duration-300 rounded-full border border-gray-700 group-hover:border-none p-2 rotate-45"
+        <svg class="h-8 w-8 rotate-45 justify-end rounded-full border border-gray-700 p-2 text-gray-50 duration-300 ease-linear group-hover:rotate-90 group-hover:bg-gray-50 group-hover:border-none"
              viewBox="0 0 16 19"
              xmlns="http://www.w3.org/2000/svg">
             <path d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"

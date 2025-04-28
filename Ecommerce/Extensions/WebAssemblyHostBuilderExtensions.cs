@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Ecommerce.Infrastructure.Helpers;
 using ECommerce.Infrastructure.Authentication;
 using ECommerce.Infrastructure.Managers;
 using Microsoft.AspNetCore.Authorization;
@@ -9,9 +10,7 @@ using MudBlazor;
 using MudBlazor.Services;
 using SharedLibrary.Constants.Permission;
 using System.Globalization;
-using System.Net.Http;
 using System.Reflection;
-using System.Reflection.Metadata;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace Ecommerce.Extensions;
@@ -58,6 +57,7 @@ public static class WebAssemblyHostBuilderExtensions
                })
                .AddHttpMessageHandler<AuthenticationHeaderHandler>();
         builder.Services.AddHttpClientInterceptor();
+        builder.Services.AddSingleton<LoadingStateContainer>();
 
         return builder;
     }

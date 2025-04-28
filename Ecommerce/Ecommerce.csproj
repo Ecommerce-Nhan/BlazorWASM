@@ -10,10 +10,7 @@
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Components\**" />
-    <Content Remove="Components\**" />
-    <EmbeddedResource Remove="Components\**" />
-    <None Remove="Components\**" />
+    <None Include="Shared\LoadingComponent.razor" />
   </ItemGroup>
 
   <ItemGroup>

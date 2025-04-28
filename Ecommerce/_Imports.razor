@@ -14,6 +14,7 @@
 @using SharedLibrary.Constants.Permission
 
 @using Ecommerce
+@using Ecommerce.Shared
 @using Ecommerce.Layout
 @using Ecommerce.Layout.Menu
 @using Ecommerce.Pages.Authentication
@@ -22,8 +23,10 @@
 @using ECommerce.Infrastructure.Managers.Admin.Users
 @using ECommerce.Infrastructure.Managers.Interceptors
 @using ECommerce.Infrastructure.Managers.Identity.Authentication
+@using Ecommerce.Infrastructure.Helpers
 
 @attribute [Authorize]
+@inject LoadingStateContainer _loadingState
 @inject NavigationManager _navigationManager
 @inject ECommerceStateProvider _stateProvider
 @inject HttpClient _httpClient

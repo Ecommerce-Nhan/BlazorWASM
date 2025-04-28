@@ -18,5 +18,21 @@
         </NotFound>
     </Router>
 </Error>
+<MudPopoverProvider />
 <MudThemeProvider />
 <MudSnackbarProvider />
+<MudOverlay Visible="@_loadingState.IsLoading" DarkBackground="true" Absolute="true" ZIndex="9999">
+    <LoadingComponent />
+</MudOverlay>
+
+@code {
+    protected override void OnInitialized()
+    {
+        _loadingState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        _loadingState.OnChange -= StateHasChanged;
+    }
+}
