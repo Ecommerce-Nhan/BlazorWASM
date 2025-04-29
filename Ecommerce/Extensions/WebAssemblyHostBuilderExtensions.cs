@@ -2,6 +2,7 @@
 using Ecommerce.Infrastructure.Helpers;
 using ECommerce.Infrastructure.Authentication;
 using ECommerce.Infrastructure.Managers;
+using ECommerce.Infrastructure.Managers.Preferences;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -29,6 +30,10 @@ public static class WebAssemblyHostBuilderExtensions
     public static WebAssemblyHostBuilder AddClientServices(this WebAssemblyHostBuilder builder)
     {
         builder.Services
+                .AddLocalization(options =>
+                {
+                    options.ResourcesPath = "Resources";
+                })
                .AddAuthorizationCore(options =>
                {
                    RegisterPermissionClaims(options);
@@ -43,6 +48,7 @@ public static class WebAssemblyHostBuilderExtensions
                    configuration.SnackbarConfiguration.ShowCloseIcon = false;
                })
                .AddScoped<ECommerceStateProvider>()
+               .AddScoped<ClientPreferenceManager>()
                .AddScoped<AuthenticationStateProvider, ECommerceStateProvider>()
                .AddManagers()
                .AddTransient<AuthenticationHeaderHandler>()
