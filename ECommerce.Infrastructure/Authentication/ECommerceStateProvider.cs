@@ -1,12 +1,8 @@
 ﻿using Blazored.LocalStorage;
-using ECommerce.Infrastructure.Extensions;
-using ECommerce.Infrastructure.Routes;
 using Microsoft.AspNetCore.Components.Authorization;
 using SharedLibrary.Constants.Permission;
 using SharedLibrary.Constants.Storage;
-using SharedLibrary.Wrappers;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text.Json;
 

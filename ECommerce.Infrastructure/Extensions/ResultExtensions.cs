@@ -1,6 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using SharedLibrary.Wrappers;
 using System.Text.Json;
-using SharedLibrary.Wrappers;
+using System.Text.Json.Serialization;
 
 namespace ECommerce.Infrastructure.Extensions;
 

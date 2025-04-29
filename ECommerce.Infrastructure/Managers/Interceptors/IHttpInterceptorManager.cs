@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Toolbelt.Blazor;
+﻿using Toolbelt.Blazor;
 
 namespace ECommerce.Infrastructure.Managers.Interceptors;
 
