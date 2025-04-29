@@ -23,6 +23,7 @@
 @using ECommerce.Infrastructure.Managers.Interceptors
 @using ECommerce.Infrastructure.Managers.Identity.Authentication
 @using Ecommerce.Infrastructure.Helpers
+@using ECommerce.Infrastructure.Managers.Preferences
 
 @attribute [Authorize]
 @inject LoadingStateContainer _loadingState
@@ -36,3 +37,4 @@
 @inject ILocalStorageService _localStorage
 @inject IJSRuntime _jsRuntime
 @inject ISnackbar _snackBar
+@inject ClientPreferenceManager _clientPreferenceManager

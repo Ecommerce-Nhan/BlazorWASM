@@ -1,4 +1,5 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 *,
 ::before,
 ::after {
@@ -733,6 +734,10 @@ video {
 
 .max-w-\[140px\] {
     max-width: 140px;
+}
+
+.max-w-\[160px\] {
+    max-width: 160px;
 }
 
 .max-w-xs {

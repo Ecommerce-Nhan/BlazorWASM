@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-
 <div class="font-sans">
     <div class="relative flex min-h-screen flex-col items-center bg-gray-100 sm:justify-center">
         <div class="relative w-full sm:max-w-sm">
@@ -9,15 +8,3 @@
         </div>
     </div>
 </div>
-@code {
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        _interceptor.RegisterEvent();
-    }
-
-    public void Dispose()
-    {
-        _interceptor.DisposeEvent();
-    }
-}

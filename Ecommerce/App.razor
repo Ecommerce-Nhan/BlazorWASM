@@ -1,13 +1,24 @@
-﻿<Error>
+﻿@using ECommerce.Infrastructure.Settings
+@implements IDisposable
+
+<MudThemeProvider Theme="BlazorTheme.DefaultTheme" IsDarkMode="isDarkMode" />
+<MudPopoverProvider />
+<MudSnackbarProvider />
+<MudOverlay Visible="@_loadingState.IsLoading" DarkBackground="true" Absolute="true" ZIndex="9999">
+    <LoadingComponent />
+</MudOverlay>
+<Error>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <NotAuthorized>
-                    <LayoutView Layout="@typeof(AuthLayout)">
-                        <Login />
-                    </LayoutView>
-                </NotAuthorized>
-            </AuthorizeRouteView>
+            <CascadingValue Value="(Func<Task>)DarkMode">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <NotAuthorized>
+                        <LayoutView Layout="@typeof(AuthLayout)">
+                            <Login />
+                        </LayoutView>
+                    </NotAuthorized>
+                </AuthorizeRouteView>
+            </CascadingValue>
         </Found>
         <NotFound>
             <CascadingAuthenticationState>
@@ -18,21 +29,24 @@
         </NotFound>
     </Router>
 </Error>
-<MudPopoverProvider />
-<MudThemeProvider />
-<MudSnackbarProvider />
-<MudOverlay Visible="@_loadingState.IsLoading" DarkBackground="true" Absolute="true" ZIndex="9999">
-    <LoadingComponent />
-</MudOverlay>
 
 @code {
+    private bool isDarkMode;
     protected override void OnInitialized()
     {
         _loadingState.OnChange += StateHasChanged;
+        _interceptor.RegisterEvent();
     }
 
     public void Dispose()
     {
         _loadingState.OnChange -= StateHasChanged;
+        _interceptor.DisposeEvent();
+    }
+
+    private async Task DarkMode()
+    {
+        isDarkMode = await _clientPreferenceManager.ToggleDarkModeAsync();
+        await InvokeAsync(StateHasChanged);
     }
 }

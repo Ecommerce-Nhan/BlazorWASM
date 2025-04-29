@@ -1,26 +1,13 @@
-﻿@using System.Security.Claims
-@inherits LayoutComponentBase
-@implements IDisposable
-
+﻿@inherits LayoutComponentBase
 <AuthorizeView>
     <NotAuthorized>
         @Body
     </NotAuthorized>
     <Authorized>
-        <MainBody>
-            @Body
-        </MainBody>
+        <MudLayout>
+            <MainBody>
+                @Body
+            </MainBody>
+        </MudLayout>
     </Authorized>
 </AuthorizeView>
-@code {
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        _interceptor.RegisterEvent();
-    }
-
-    public void Dispose()
-    {
-        _interceptor.DisposeEvent();
-    }
-}
