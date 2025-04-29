@@ -8,13 +8,23 @@ public partial class Login : ComponentBase
 {
     [Inject] private ILogger<Login> _logger { get; set; } = default!;
     private TokenRequest _tokenModel = new();
-
+    private bool _firstRender = true;
     protected override async Task OnInitializedAsync()
     {
         var state = await _stateProvider.GetAuthenticationStateAsync();
         if (state.User.Identity?.IsAuthenticated == true)
         {
             _navigationManager.NavigateTo("/");
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            _firstRender = false;
+            StateHasChanged();
         }
     }
 
