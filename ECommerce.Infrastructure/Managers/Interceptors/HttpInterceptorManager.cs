@@ -1,4 +1,5 @@
-﻿using ECommerce.Infrastructure.Managers.Identity.Authentication;
+﻿using Ecommerce.Infrastructure.Helpers;
+using ECommerce.Infrastructure.Managers.Identity.Authentication;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using System.Net;
@@ -13,16 +14,19 @@ public class HttpInterceptorManager : IHttpInterceptorManager
     private readonly IAuthenticationManager _authenticationManager;
     private readonly HttpClientInterceptor _interceptor;
     private readonly NavigationManager _navigationManager;
+    private readonly LoadingStateContainer _loadingStateContainer;
 
     public HttpInterceptorManager(ISnackbar snackbar,
         IAuthenticationManager authenticationManager,
         HttpClientInterceptor interceptor,
-        NavigationManager navigationManager)
+        NavigationManager navigationManager,
+        LoadingStateContainer loadingStateContainer)
     {
         _snackbar = snackbar;
         _interceptor = interceptor;
         _authenticationManager = authenticationManager;
         _navigationManager = navigationManager;
+        _loadingStateContainer = loadingStateContainer;
     }
 
     public void RegisterEvent()
@@ -34,7 +38,9 @@ public class HttpInterceptorManager : IHttpInterceptorManager
 
     public async Task InterceptBeforeHttpAsync(object sender, HttpClientInterceptorEventArgs e)
     {
+        _loadingStateContainer.IsLoading = true;
         var absPath = e.Request.RequestUri!.AbsolutePath;
+
         if (!absPath.Contains("token") && !absPath.Contains("accounts"))
         {
             try
@@ -42,12 +48,14 @@ public class HttpInterceptorManager : IHttpInterceptorManager
                 var token = await _authenticationManager.TryRefreshToken();
                 if (!string.IsNullOrEmpty(token))
                 {
+                    _snackbar.Add("Refreshed Token.", Severity.Success);
                     e.Request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                _snackbar.Add("You are Logged Out.", Severity.Error);
                 await _authenticationManager.Logout();
                 _navigationManager.NavigateTo("/");
             }
@@ -56,6 +64,8 @@ public class HttpInterceptorManager : IHttpInterceptorManager
 
     public async Task InterceptAfterHttpAsync(object sender, HttpClientInterceptorEventArgs e)
     {
+        await Task.Delay(500);
+        _loadingStateContainer.IsLoading = false;
         var statusCode = e.Response?.StatusCode;
 
         if (statusCode.HasValue && ((int)statusCode.Value >= 400))

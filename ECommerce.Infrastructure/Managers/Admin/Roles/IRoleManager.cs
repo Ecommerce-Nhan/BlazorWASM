@@ -1,5 +1,4 @@
-﻿using SharedLibrary.Dtos.Roles;
-using SharedLibrary.Requests.Identity;
+﻿using SharedLibrary.Requests.Identity;
 using SharedLibrary.Response.Identity;
 using SharedLibrary.Wrappers;
 
@@ -7,7 +6,7 @@ namespace ECommerce.Infrastructure.Managers.Admin.Roles;
 
 public interface IRoleManager : IManager
 {
-    Task<List<RoleResponse>> GetAllAsync();
+    Task<IResponse<List<RoleResponse>>> GetAllAsync();
 
     Task<IResponse<PermissionResponse>> GetPermissionsAsync(string roleId);
 

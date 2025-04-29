@@ -14,10 +14,10 @@ public class RoleManager : IRoleManager
         _httpClient = httpClient;
     }
 
-    public async Task<List<RoleResponse>> GetAllAsync()
+    public async Task<IResponse<List<RoleResponse>>> GetAllAsync()
     {
         var response = await _httpClient.GetAsync(Routes.RolesEndpoints.GetAll);
-        return await response.ToSelfResponse<List<RoleResponse>>();
+        return await response.ToResponse<List<RoleResponse>>();
     }
 
     public async Task<IResponse<PermissionResponse>> GetPermissionsAsync(string roleId)
