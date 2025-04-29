@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace Ecommerce.Layout.Menu;
+namespace Ecommerce.Shared.Layout.Menu;
 
 public partial class NavbarMenu : ComponentBase
 {

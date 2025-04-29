@@ -10,7 +10,7 @@
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="Shared\LoadingComponent.razor" />
+    <None Include="Shared\Components\LoadingComponent.razor" />
   </ItemGroup>
 
   <ItemGroup>

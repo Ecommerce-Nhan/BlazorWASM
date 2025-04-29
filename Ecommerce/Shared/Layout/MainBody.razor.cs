@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace Ecommerce.Layout;
+namespace Ecommerce.Shared.Layout;
 
 public partial class MainBody
 {
