@@ -1578,3 +1578,7 @@ video {
         box-shadow: none;
     }
 }
+
+.mud-table-container {
+    overflow: auto;
+}
