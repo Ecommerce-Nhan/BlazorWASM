@@ -2,6 +2,7 @@
 @implements IDisposable
 
 <MudThemeProvider Theme="BlazorTheme.DefaultTheme" IsDarkMode="isDarkMode" />
+<MudDialogProvider />
 <MudPopoverProvider />
 <MudSnackbarProvider />
 <MudOverlay Visible="@_loadingState.IsLoading" DarkBackground="true" Absolute="true" ZIndex="9999">

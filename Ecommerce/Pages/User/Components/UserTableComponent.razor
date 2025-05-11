@@ -1,4 +1,6 @@
-﻿<div class="flex flex-col mt-6">
+﻿@inject Microsoft.Extensions.Localization.IStringLocalizer<User> _localizer
+
+<div class="flex flex-col mt-6">
     <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div class="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
@@ -16,21 +18,15 @@
                                     </svg>
                                 </button>
                             </th>
-
                             <th scope="col" class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                Phone Number
+                                @_localizer["PhoneNumber"]
+                            </th>
+                            <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                @_localizer["Address"]
                             </th>
 
                             <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                Address
-                            </th>
-
-                         @*    <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Users</th>
-
-                            <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">License use</th> *@
-
-                            <th scope="col" class="relative py-3.5 px-4">
-                                <span class="sr-only">Edit</span>
+                                @_localizer["Edit"]
                             </th>
                         </tr>
                     </thead>

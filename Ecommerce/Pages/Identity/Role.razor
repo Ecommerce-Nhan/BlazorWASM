@@ -18,14 +18,14 @@
         <div class="justify-center mud-text-align-center">
             @if (_canCreateRoles)
             {
-                @* <MudButton DisableElevation 
+                <MudButton DisableElevation 
                     Variant="Variant.Filled" 
                     Color="Color.Primary" 
                     OnClick="(() => InvokeModal())" 
                     StartIcon="@Icons.Material.Filled.Add" 
                     IconColor="Color.Surface">
                     @_localizer["Create"]
-                </MudButton> *@
+                </MudButton>
                 <MudButton DisableElevation Variant="Variant.Filled" 
                            OnClick="GetRolesAsync" 
                            StartIcon="@Icons.Material.Filled.Refresh" 
@@ -73,14 +73,14 @@
                     {
                         <MudMenuItem @onclick="@(() => ManagePermissions(@context.Id))">@_localizer["Manage Permission"]</MudMenuItem>
                     }
-                    @* @if (_canEditRoles)
+                    @if (_canEditRoles)
                     {
                         <MudMenuItem @onclick="@(() => InvokeModal(@context.Id))">@_localizer["Edit"]</MudMenuItem>
                     }
                     @if (_canDeleteRoles)
                     {
                         <MudMenuItem @onclick="@(() => Delete(@context.Id))">@_localizer["Delete"]</MudMenuItem>
-                    } *@
+                    }
                 </MudMenu>
             }
             else

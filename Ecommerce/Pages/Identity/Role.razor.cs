@@ -70,60 +70,57 @@ public partial class Role
         return false;
     }
 
-    //private async Task Delete(string id)
-    //{
-    //    string deleteContent = _localizer["Delete Content"];
-    //    var parameters = new DialogParameters
-    //        {
-    //            {nameof(Shared.Dialogs.DeleteConfirmation.ContentText), string.Format(deleteContent, id)}
-    //        };
-    //    var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
-    //    var dialog = _dialogService.Show<Shared.Dialogs.DeleteConfirmation>(_localizer["Delete"], parameters, options);
-    //    var result = await dialog.Result;
-    //    if (!result.Cancelled)
-    //    {
-    //        var response = await RoleManager.DeleteAsync(id);
-    //        if (response.Succeeded)
-    //        {
-    //            await Reset();
-    //            await HubConnection.SendAsync(ApplicationConstants.SignalR.SendUpdateDashboard);
-    //            _snackBar.Add(response.Messages[0], Severity.Success);
-    //        }
-    //        else
-    //        {
-    //            await Reset();
-    //            foreach (var message in response.Messages)
-    //            {
-    //                _snackBar.Add(message, Severity.Error);
-    //            }
-    //        }
-    //    }
-    //}
+    private async Task Delete(string id)
+    {
+        string deleteContent = _localizer["Delete Content"];
+        var parameters = new DialogParameters
+            {
+                {nameof(ECommerce.Shared.Dialogs.DeleteConfirmation.ContentText), string.Format(deleteContent, id)}
+            };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
+        var dialog = await _dialogService.ShowAsync<ECommerce.Shared.Dialogs.DeleteConfirmation>(_localizer["Delete"], parameters, options);
+        var result = await dialog.Result;
+        if (result != null && !result.Canceled)
+        {
+            var response = await RoleManager.DeleteAsync(id);
+            if (response.Succeeded)
+            {
+                await Reset();
+                //await HubConnection.SendAsync(ApplicationConstants.SignalR.SendUpdateDashboard);
+                _snackBar.Add(response.Message, Severity.Success);
+            }
+            else
+            {
+                await Reset();
+                foreach (var message in response.Errors!)
+                {
+                    _snackBar.Add(message, Severity.Error);
+                }
+            }
+        }
+    }
 
-    //private async Task InvokeModal(string id = null)
-    //{
-    //    var parameters = new DialogParameters();
-    //    if (id != null)
-    //    {
-    //        _role = _roleList.FirstOrDefault(c => c.Id == id);
-    //        if (_role != null)
-    //        {
-    //            parameters.Add(nameof(RoleModal.RoleModel), new RoleRequest
-    //            {
-    //                Id = _role.Id,
-    //                Name = _role.Name,
-    //                Description = _role.Description
-    //            });
-    //        }
-    //    }
-    //    var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
-    //    var dialog = _dialogService.Show<RoleModal>(id == null ? _localizer["Create"] : _localizer["Edit"], parameters, options);
-    //    var result = await dialog.Result;
-    //    if (!result.Cancelled)
-    //    {
-    //        await Reset();
-    //    }
-    //}
+    private async Task InvokeModal(string? id = null)
+    {
+        var parameters = new DialogParameters();
+        if (id != null)
+        {
+            _role = _roleList.FirstOrDefault(c => c.Id == id) ?? new RoleResponse();
+            parameters.Add(nameof(RoleModal.RoleModel), new RoleRequest
+            {
+                Id = _role.Id,
+                Name = _role.Name,
+                Description = _role.Description
+            });
+        }
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
+        var dialog = await _dialogService.ShowAsync<RoleModal>(id == null ? _localizer["Create"] : _localizer["Edit"], parameters, options);
+        var result = await dialog.Result;
+        if (result != null && !result.Canceled)
+        {
+            await Reset();
+        }
+    }
 
     private async Task Reset()
     {
