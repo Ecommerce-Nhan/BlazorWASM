@@ -41,11 +41,13 @@ public class RoleManager : IRoleManager
 
     public async Task<IResponse<PermissionResponse>> GetPermissionsAsync(string roleId)
     {
-        throw new NotImplementedException();
+        var response = await _httpClient.GetAsync(Routes.RolesEndpoints.GetPermissions + roleId);
+        return await response.ToResponse<PermissionResponse>();
     }
 
     public async Task<IResponse<string>> UpdatePermissionsAsync(PermissionRequest request)
     {
-        throw new NotImplementedException();
+        var response = await _httpClient.PutAsJsonAsync(Routes.RolesEndpoints.UpdatePermissions, request);
+        return await response.ToResponse<string>();
     }
 }

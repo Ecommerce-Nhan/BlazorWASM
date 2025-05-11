@@ -130,6 +130,6 @@ public partial class Role
 
     private void ManagePermissions(string roleId)
     {
-        _navigationManager.NavigateTo($"/identity/role-permissions/{roleId}");
+        _navigationManager.NavigateTo($"/admin/role-permissions/{roleId}");
     }
 }

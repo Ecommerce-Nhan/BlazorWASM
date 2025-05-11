@@ -47,6 +47,7 @@ public static class WebAssemblyHostBuilderExtensions
                    configuration.SnackbarConfiguration.VisibleStateDuration = 3000;
                    configuration.SnackbarConfiguration.ShowCloseIcon = false;
                })
+               .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
                .AddScoped<ECommerceStateProvider>()
                .AddScoped<ClientPreferenceManager>()
                .AddScoped<AuthenticationStateProvider, ECommerceStateProvider>()
