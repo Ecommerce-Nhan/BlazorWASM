@@ -126,6 +126,12 @@
   <data name="E-mail" xml:space="preserve">
     <value>Địa chỉ e-mail</value>
   </data>
+  <data name="E-mail1" xml:space="preserve">
+    <value>Địa chỉ e-mail</value>
+  </data>
+  <data name="E-mail2" xml:space="preserve">
+    <value>Địa chỉ e-mail</value>
+  </data>
   <data name="Email is required!" xml:space="preserve">
     <value>Địa chỉ e-mail là bắt buộc</value>
   </data>
