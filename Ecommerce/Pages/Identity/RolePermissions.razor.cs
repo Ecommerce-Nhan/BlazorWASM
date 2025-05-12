@@ -16,7 +16,7 @@ public partial class RolePermissions
     [Inject] private IRoleManager RoleManager { get; set; } = default!;
 
     //[CascadingParameter] private HubConnection HubConnection { get; set; }
-    [EditorRequired] [Parameter] public string Id { get; set; } = default!;
+    [EditorRequired][Parameter] public string Id { get; set; } = default!;
     [Parameter] public string Title { get; set; } = default!;
     [Parameter] public string Description { get; set; } = default!;
 
@@ -26,9 +26,9 @@ public partial class RolePermissions
     private RoleClaimResponse _roleClaims = new();
     private RoleClaimResponse _selectedItem = new();
     private string _searchString = "";
-    private bool _dense = false;
+    private bool _dense = true;
     private bool _striped = true;
-    private bool _bordered = false;
+    private bool _bordered = true;
 
     private ClaimsPrincipal _currentUser = default!;
     private bool _canEditRolePermissions;
@@ -81,7 +81,7 @@ public partial class RolePermissions
             {
                 _snackBar.Add(error, Severity.Error);
             }
-            _navigationManager.NavigateTo("/identity/roles");
+            _navigationManager.NavigateTo("/admin/role");
         }
     }
 
@@ -94,7 +94,7 @@ public partial class RolePermissions
             _snackBar.Add(result.Message, Severity.Success);
             //await HubConnection.SendAsync(ApplicationConstants.SignalR.SendRegenerateTokens);
             //await HubConnection.SendAsync(ApplicationConstants.SignalR.OnChangeRolePermissions, _currentUser.GetUserId(), request.RoleId);
-            _navigationManager.NavigateTo("/identity/roles");
+            _navigationManager.NavigateTo("/admin/role");
         }
         else
         {
@@ -108,7 +108,7 @@ public partial class RolePermissions
     private bool Search(RoleClaimResponse roleClaims)
     {
         if (string.IsNullOrWhiteSpace(_searchString)) return true;
-        if (roleClaims.Value?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+        if (roleClaims.ClaimValue?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
         {
             return true;
         }
