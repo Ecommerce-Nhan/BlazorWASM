@@ -2,5 +2,12 @@
 
 public static class UserEndpoints
 {
-    public static string GetAll = "api/v1/user";
+    public static string Default = "api/v1/user";
+    public static string GetAll = Default;
+    public static string Get = Default;
+
+    public static string UserRoles(string userId)
+    {
+        return $"{Default}/user-role/{userId}";
+    }
 }
