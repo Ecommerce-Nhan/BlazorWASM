@@ -39,4 +39,10 @@ public class UserManager : IUserManager
         var response = await _httpClient.PutAsJsonAsync(Routes.UserEndpoints.UserRoles(request.UserId), request);
         return await response.ToResponse<UserRoleResponse>();
     }
+
+    public async Task<IResponse> RegisterUserAsync(RegisterRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync(Routes.UserEndpoints.Register, request);
+        return await response.ToResponse();
+    }
 }

@@ -90,17 +90,17 @@ namespace Ecommerce.Pages.Identity
         //        : _localizer["Filtered Users exported"], Severity.Success);
         //}
 
-        //private async Task InvokeModal()
-        //{
-        //    var parameters = new DialogParameters();
-        //    var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
-        //    var dialog = await _dialogService.ShowAsync<RegisterUserModal>(_localizer["Register New User"], parameters, options);
-        //    var result = await dialog.Result;
-        //    if (result != null && !result.Canceled)
-        //    {
-        //        await GetUsersAsync();
-        //    }
-        //}
+        private async Task InvokeModal()
+        {
+            var parameters = new DialogParameters();
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
+            var dialog = await _dialogService.ShowAsync<RegisterUserModal>(_localizer["Register New User"], parameters, options);
+            var result = await dialog.Result;
+            if (result != null && !result.Canceled)
+            {
+                await GetUsersAsync();
+            }
+        }
 
         private void ViewProfile(string userId)
         {

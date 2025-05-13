@@ -14,4 +14,6 @@ public interface IUserManager : IManager
     Task<IResponse<UserRoleResponse>> GetRolesAsync(string userId);
 
     Task<IResponse> UpdateRolesAsync(UpdateUserRoleRequest request);
+
+    Task<IResponse> RegisterUserAsync(RegisterRequest request);
 }
