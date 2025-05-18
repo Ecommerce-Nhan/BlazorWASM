@@ -48,8 +48,8 @@ public static class WebAssemblyHostBuilderExtensions
                    configuration.SnackbarConfiguration.ShowCloseIcon = false;
                })
                .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
-               .AddScoped<ECommerceStateProvider>()
                .AddScoped<ClientPreferenceManager>()
+               .AddScoped<ECommerceStateProvider>()
                .AddScoped<AuthenticationStateProvider, ECommerceStateProvider>()
                .AddManagers()
                .AddTransient<AuthenticationHeaderHandler>()

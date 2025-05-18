@@ -15,9 +15,9 @@ public partial class RoleModal
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
     //[CascadingParameter] private HubConnection HubConnection { get; set; }
 
-    //private FluentValidationValidator _fluentValidationValidator;
+    private FluentValidationValidator _fluentValidationValidator = default!;
 
-    //private bool Validated => _fluentValidationValidator.Validate(options => { options.IncludeAllRuleSets(); });
+    private bool Validated => _fluentValidationValidator.Validate(options => { options.IncludeAllRuleSets(); });
 
     public void Cancel()
     {
