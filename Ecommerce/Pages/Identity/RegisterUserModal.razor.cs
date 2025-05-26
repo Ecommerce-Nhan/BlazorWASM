@@ -3,55 +3,73 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using SharedLibrary.Requests.Identity;
 
-namespace Ecommerce.Pages.Identity
+namespace Ecommerce.Pages.Identity;
+
+public partial class RegisterUserModal
 {
-    public partial class RegisterUserModal
+    private FluentValidationValidator _fluentValidationValidator = default!;
+    private bool Validated => _fluentValidationValidator.Validate(options => { options.IncludeAllRuleSets(); });
+    private readonly RegisterRequest _registerUserModel = new();
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private void Cancel()
     {
-        private FluentValidationValidator _fluentValidationValidator = default!;
-        private bool Validated => _fluentValidationValidator.Validate(options => { options.IncludeAllRuleSets(); });
-        private readonly RegisterRequest _registerUserModel = new();
-        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
+        MudDialog.Cancel();
+    }
 
-        private void Cancel()
+    private async Task SubmitAsync()
+    {
+        var response = await _userManager.RegisterUserAsync(_registerUserModel);
+        if (response.Succeeded)
         {
-            MudDialog.Cancel();
+            _snackBar.Add(response.Message, Severity.Success);
+            MudDialog.Close();
         }
-
-        private async Task SubmitAsync()
+        else
         {
-            var response = await _userManager.RegisterUserAsync(_registerUserModel);
-            if (response.Succeeded)
+            foreach (var message in response.Errors)
             {
-                _snackBar.Add(response.Message, Severity.Success);
-                MudDialog.Close();
+                _snackBar.Add(message, Severity.Error);
+            }
+        }
+    }
+
+    private bool _passwordVisibility;
+    private InputType _passwordInput = InputType.Password;
+    private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    private void TogglePasswordVisibility()
+    {
+        if (_passwordVisibility)
+        {
+            _passwordVisibility = false;
+            _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+            _passwordInput = InputType.Password;
+        }
+        else
+        {
+            _passwordVisibility = true;
+            _passwordInputIcon = Icons.Material.Filled.Visibility;
+            _passwordInput = InputType.Text;
+        }
+    }
+
+    public class FormEditContext
+    {
+        public FormEditContext(RegisterRequest? dataItem)
+        {
+            if (dataItem == null)
+            {
+                DataItem = new RegisterRequest();
+                IsNewRow = true;
             }
             else
             {
-                foreach (var message in response.Errors)
-                {
-                    _snackBar.Add(message, Severity.Error);
-                }
+                DataItem = dataItem;
             }
         }
 
-        private bool _passwordVisibility;
-        private InputType _passwordInput = InputType.Password;
-        private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
-
-        private void TogglePasswordVisibility()
-        {
-            if (_passwordVisibility)
-            {
-                _passwordVisibility = false;
-                _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
-                _passwordInput = InputType.Password;
-            }
-            else
-            {
-                _passwordVisibility = true;
-                _passwordInputIcon = Icons.Material.Filled.Visibility;
-                _passwordInput = InputType.Text;
-            }
-        }
+        public RegisterRequest DataItem { get; set; }
+        public bool IsNewRow { get; set; }
     }
 }

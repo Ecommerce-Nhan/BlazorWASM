@@ -1,116 +1,87 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using MudBlazor;
 using SharedLibrary.Constants.Permission;
 using SharedLibrary.Dtos.Users;
+using System.Security.Claims;
 
-namespace Ecommerce.Pages.Identity
+namespace Ecommerce.Pages.Identity;
+
+public partial class User
 {
-    public partial class User
+    private MudTable<UserDto> _table = default!;
+    private string _searchString = "";
+
+    private ClaimsPrincipal _currentUser = default!;
+    private bool _canCreate;
+    private bool _canSearch;
+    private bool _canViewRoles;
+
+    protected override async Task OnInitializedAsync()
     {
-        private List<UserDto> _userList = new();
-        private UserDto _user = default!;
-        private string _searchString = "";
-        private bool _dense = true;
-        private bool _striped = true;
-        private bool _bordered = true;
+        _currentUser = await _authenticationManager.CurrentUser();
+        _canCreate = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Users.Create)).Succeeded;
+        _canSearch = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Users.Search)).Succeeded;
+        _canViewRoles = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Roles.View)).Succeeded;
+    }
 
-        private ClaimsPrincipal _currentUser = default!;
-        private bool _canCreateUsers;
-        private bool _canSearchUsers;
-        private bool _canExportUsers;
-        private bool _canViewRoles;
-        private bool _loaded;
-
-        protected override async Task OnInitializedAsync()
+    private async Task InvokeModal()
+    {
+        var parameters = new DialogParameters();
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
+        var dialog = await _dialogService.ShowAsync<RegisterUserModal>(_localizer["Register New User"], parameters, options);
+        var result = await dialog.Result;
+        if (result != null && !result.Canceled)
         {
-            _currentUser = await _authenticationManager.CurrentUser();
-            _canCreateUsers = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Users.Create)).Succeeded;
-            _canSearchUsers = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Users.Search)).Succeeded;
-            _canExportUsers = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Users.Export)).Succeeded;
-            _canViewRoles = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Roles.View)).Succeeded;
-
-            await GetUsersAsync();
-            _loaded = true;
+            await _table.ReloadServerData();
         }
+    }
 
-        private async Task GetUsersAsync()
+    private void ManageRoles(string userId, string? email)
+    {
+        if (email == "3aef4452-5f15-42b5-8d5c-9eaab0b23476") 
+            _snackBar.Add(_localizer["Not Allowed."], Severity.Error);
+        else 
+            _navigationManager.NavigateTo($"/admin/user-roles/{userId}");
+    }
+
+    private void OnSearch(string text)
+    {
+        _searchString = text;
+        _table.ReloadServerData();
+    }
+
+    private void OnFilter(ref List<UserDto> data, TableState state)
+    {
+        switch (state.SortLabel)
         {
-            var response = await _userManager.GetAllAsync();
-            if (response.Succeeded)
-            {
-                _userList = response.Data.ToList();
-            }
-            else
-            {
-                foreach (var message in response.Errors)
-                {
-                    _snackBar.Add(message, Severity.Error);
-                }
-            }
+            case "FirstName":
+                data = data.OrderByDirection(state.SortDirection, o => o.FirstName).ToList();
+                break;
+            case "LastName":
+                data = data.OrderByDirection(state.SortDirection, o => o.LastName).ToList();
+                break;
+            case "UserName":
+                data = data.OrderByDirection(state.SortDirection, o => o.UserName).ToList();
+                break;
+            case "Email":
+                data = data.OrderByDirection(state.SortDirection, o => o.Email).ToList();
+                break;
+            case "PhoneNumber":
+                data = data.OrderByDirection(state.SortDirection, o => o.PhoneNumber).ToList();
+                break;
         }
+    }
 
-        private bool Search(UserDto user)
+    private async Task<TableData<UserDto>> ServerReload(TableState state, CancellationToken token)
+    {
+        var response = await _userManager.GetAllAsync();
+        var data = response.Data.ToList();
+        OnFilter(ref data, state);
+
+        return new TableData<UserDto>()
         {
-            if (string.IsNullOrWhiteSpace(_searchString)) return true;
-            if (user.FirstName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
-            {
-                return true;
-            }
-            if (user.LastName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
-            {
-                return true;
-            }
-            if (user.Email?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
-            {
-                return true;
-            }
-            if (user.PhoneNumber?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
-            {
-                return true;
-            }
-            if (user.UserName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        //private async Task ExportToExcel()
-        //{
-        //    var base64 = await _userManager.ExportToExcelAsync(_searchString);
-        //    await _jsRuntime.InvokeVoidAsync("Download", new
-        //    {
-        //        ByteArray = base64,
-        //        FileName = $"{nameof(Users).ToLower()}_{DateTime.Now:ddMMyyyyHHmmss}.xlsx",
-        //        MimeType = ApplicationConstants.MimeTypes.OpenXml
-        //    });
-        //    _snackBar.Add(string.IsNullOrWhiteSpace(_searchString)
-        //        ? _localizer["Users exported"]
-        //        : _localizer["Filtered Users exported"], Severity.Success);
-        //}
-
-        private async Task InvokeModal()
-        {
-            var parameters = new DialogParameters();
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = await _dialogService.ShowAsync<RegisterUserModal>(_localizer["Register New User"], parameters, options);
-            var result = await dialog.Result;
-            if (result != null && !result.Canceled)
-            {
-                await GetUsersAsync();
-            }
-        }
-
-        private void ViewProfile(string userId)
-        {
-            _navigationManager.NavigateTo($"/user-profile/{userId}");
-        }
-
-        private void ManageRoles(string userId, string email)
-        {
-            if (email == "3aef4452-5f15-42b5-8d5c-9eaab0b23476") _snackBar.Add(_localizer["Not Allowed."], Severity.Error);
-            else _navigationManager.NavigateTo($"/admin/user-roles/{userId}");
-        }
+            Items = data,
+            TotalItems = response.TotalRecords
+        };
     }
 }

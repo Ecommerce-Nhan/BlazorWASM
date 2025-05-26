@@ -3,85 +3,102 @@
 @attribute [Authorize(Policy = Permissions.Users.View)]
 @inject Microsoft.Extensions.Localization.IStringLocalizer<User> _localizer
 
-<HeadingTitleComponent Title="@_localizer["Users"]" Description="@_localizer["Manage Users"]" />
-@if (!_loaded)
-{
-    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-}
-else
-{
-    <MudTable Hover="true" Elevation="25" Items="_userList" Dense="@_dense" Bordered="@_bordered" Striped="@_striped" Filter="new Func<UserDto, bool>(Search)" @bind-user="_user">
-        <ToolBarContent>
-            <div class="mud-text-align-center justify-center">
-                @if (_canCreateUsers)
-                {
-                    <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => InvokeModal())" StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Surface">@_localizer["Register New User"]</MudButton>
-                    <MudButton DisableElevation Variant="Variant.Filled" OnClick="GetUsersAsync" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Secondary">@_localizer["Reload"]</MudButton>
-                    @if (_canExportUsers)
-                    {
-                        @* <MudButton DisableElevation Variant="Variant.Filled" OnClick="ExportToExcel" StartIcon="@Icons.Custom.FileFormats.FileExcel" IconColor="Color.Secondary" Color="Color.Surface" Style="margin-left: 5px;">@_localizer["Export"]</MudButton> *@
-                    }
-                }
-                else
-                {
-                    <MudButton DisableElevation Variant="Variant.Filled" OnClick="GetUsersAsync" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Secondary">@_localizer["Reload"]</MudButton>
-                    @if (_canExportUsers)
-                    {
-                        @* <MudButton DisableElevation Variant="Variant.Filled" OnClick="ExportToExcel" StartIcon="@Icons.Custom.FileFormats.FileExcel" IconColor="Color.Secondary" Color="Color.Surface" Style="margin-left: 5px;">@_localizer["Export"]</MudButton> *@
-                    }
-                }
-            </div>
-            <MudSpacer />
-            @if (_canSearchUsers)
+<PageTitle>@_localizer["Title"]</PageTitle>
+<HeadingTitleComponent Title="@_localizer["Title"]" Description="@_localizer["Desc"]" />
+
+<MudTable T="@UserDto"
+          @ref="_table"
+          ServerData="ServerReload"
+          RowClass="cursor-pointer"
+          Height="600px"
+          Elevation="25"
+          SortLabel="@_localizer["Sort"]"
+          Hover="true"
+          Dense="@TableSetting.Dense"
+          Bordered="@TableSetting.Bordered"
+          Striped="@TableSetting.Striped"
+          FixedHeader="true"
+          Virtualize="true">
+    <ToolBarContent>
+        <div class="mud-text-align-center justify-center">
+            @if (_canCreate)
             {
-                <MudTextField @bind-Value="_searchString" Immediate="true" FullWidth=false Placeholder="@_localizer["Search For Users"]" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mb-3 mt-0"></MudTextField>
+                <MudButton Elevation="4"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           OnClick="(() => InvokeModal())"
+                           Class="transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 shadow-md hover:shadow-xl rounded-xl px-4 py-2 text-white">
+                    @_localizer["Create"]
+                </MudButton>
             }
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserDto, object>(x => x.FirstName)">@_localizer["First Name"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserDto, object>(x => x.LastName)">@_localizer["Last Name"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserDto, object>(x => x.UserName)">@_localizer["UserName"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserDto, object>(x => x.Email)">@_localizer["Email"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserDto, object>(x => x.PhoneNumber)">@_localizer["PhoneNumber"]</MudTableSortLabel></MudTh>
-         @*    <MudTh><MudTableSortLabel SortBy="new Func<UserDto, object>(x => x.EmailConfirmed)">@_localizer["Email Confirmation"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserDto, object>(x => x.IsActive)">@_localizer["Active"]</MudTableSortLabel></MudTh> *@
-            <MudTh Style="text-align:right">@_localizer["Actions"]</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="FirstName">
-                <MudHighlighter Text="@context.FirstName" HighlightedText="@_searchString" />
-            </MudTd>
-            <MudTd DataLabel="LastName">
-                <MudHighlighter Text="@context.LastName" HighlightedText="@_searchString" />
-            </MudTd>
-            <MudTd DataLabel="UserName">
-                <MudHighlighter Text="@context.UserName" HighlightedText="@_searchString" />
-            </MudTd>
-            <MudTd DataLabel="Email">
-                <MudHighlighter Text="@context.Email" HighlightedText="@_searchString" />
-            </MudTd>
-            <MudTd DataLabel="PhoneNumber">
-                <MudHighlighter Text="@context.PhoneNumber" HighlightedText="@_searchString" />
-            </MudTd>
-            @* <MudTd DataLabel="EmailConfirmed"><MudCheckBox @bind-Value="@context.EmailConfirmed" ReadOnly Color="Color.Secondary"></MudCheckBox></MudTd> *@
-            @* <MudTd DataLabel="Active"><MudCheckBox @bind-Value="@context.IsActive" ReadOnly Color="Color.Secondary"></MudCheckBox></MudTd> *@
-            <MudTd DataLabel="Actions" Style="text-align:right">
-                <MudMenu Label="@_localizer["Actions"]" Variant="Variant.Filled" DisableElevation="true" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" IconColor="Color.Secondary" Direction="Direction.Left" OffsetX="true">
-                    <MudMenuItem OnClick="(()=>ViewProfile(context.Id))">@_localizer["View Profile"]</MudMenuItem>
-                    @if (_canViewRoles)
-                        {
-                        <MudMenuItem OnClick="(()=>ManageRoles(context.Id, context.Email))">@_localizer["Manage Roles"]</MudMenuItem>
-                        }
-                </MudMenu>
-            </MudTd>
-        </RowTemplate>
-        <FooterContent>
-            <MudSwitch @bind-Value="@_dense" Color="Color.Secondary" Style="margin-left: 5px;">@_localizer["Dense"]</MudSwitch>
-            <MudSwitch @bind-Value="@_striped" Color="Color.Tertiary" Style="margin-left: 5px;">@_localizer["Striped"]</MudSwitch>
-            <MudSwitch @bind-Value="@_bordered" Color="Color.Warning" Style="margin-left: 5px;">@_localizer["Bordered"]</MudSwitch>
-        </FooterContent>
-        <PagerContent>
-            <TablePagerComponent />
-        </PagerContent>
-    </MudTable>
-}
+        </div>
+        <MudSpacer />
+        @if (_canSearch)
+        {
+            <MudTextField T="@string"
+                          Placeholder="@_localizer["Search"]"
+                          ValueChanged="@(s => OnSearch(s))"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          IconSize="Size.Medium"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Class="rounded-xl shadow-sm focus:shadow-md transition-all duration-200 w-full max-w-sm" />
+        }
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortLabel="FirstName" T="@UserDto">@_localizer["First Name"]</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="LastName" T="@UserDto">@_localizer["Last Name"]</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="UserName" T="@UserDto">@_localizer["UserName"]</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="Email" T="@UserDto">@_localizer["Email"]</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="PhoneNumber" T="@UserDto">@_localizer["PhoneNumber"]</MudTableSortLabel>
+        </MudTh>
+        <MudTh Style="text-align:right">@_localizer["Actions"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@_localizer["First Name"]">
+            <MudHighlighter Text="@context.FirstName" />
+        </MudTd>
+        <MudTd DataLabel="@_localizer["Last Name"]">
+            <MudHighlighter Text="@context.LastName" />
+        </MudTd>
+        <MudTd DataLabel="@_localizer["UserName"]">
+            <MudHighlighter Text="@context.UserName" />
+        </MudTd>
+        <MudTd DataLabel="@_localizer["Email"]">
+            <MudHighlighter Text="@context.Email" />
+        </MudTd>
+        <MudTd DataLabel="@_localizer["PhoneNumber"]">
+            <MudHighlighter Text="@context.PhoneNumber" />
+        </MudTd>
+        <MudTd DataLabel="@_localizer["Actions"]">
+            <MudMenu Label="@_localizer["Actions"]"
+                     Variant="Variant.Filled"
+                     IconColor="Color.Secondary"
+                     EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
+                     Class="horizontal-menu min-w-[9rem] max-w-xs rounded-xl bg-white shadow-md ring-1 ring-gray-200">
+                @if (_canViewRoles)
+                {
+                    <MudMenuItem OnClick="(() => ManageRoles(context.Id, context.Email))" Class="before:hidden hover:before:flex before:justify-center before:items-center before:h-4 before:px-1 before:bg-black dark:before:bg-white dark:before:text-black before:text-white before:bg-opacity-50 before:absolute before:-top-7 before:rounded-lg hover:-translate-y-5 cursor-pointer hover:scale-125 bg-white dark:bg-[#191818] rounded-full p-2 px-3">
+                        <MudTooltip Text="@_localizer["Manage Roles"]" Style="@($"background:{Colors.Orange.Darken4}")">
+                            <MudIcon Icon="@Icons.Material.Outlined.EditNote" Style="@($"color:{Colors.Orange.Darken4}")" Size="Size.Medium" />
+                        </MudTooltip>
+                    </MudMenuItem>
+                }
+            </MudMenu>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <TablePagerComponent />
+    </PagerContent>
+</MudTable>
