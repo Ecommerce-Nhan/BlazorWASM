@@ -3,6 +3,7 @@ using Ecommerce.Infrastructure.Helpers;
 using ECommerce.Infrastructure.Authentication;
 using ECommerce.Infrastructure.Managers;
 using ECommerce.Infrastructure.Managers.Preferences;
+using ECommerce.Infrastructure.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -65,6 +66,7 @@ public static class WebAssemblyHostBuilderExtensions
                .AddHttpMessageHandler<AuthenticationHeaderHandler>();
         builder.Services.AddHttpClientInterceptor();
         builder.Services.AddSingleton<LoadingStateContainer>();
+        builder.Services.AddScoped<TableSetting>();
 
         return builder;
     }

@@ -1,0 +1,9 @@
+﻿@page "/utilities"
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Utilities> _localizer
+
+<PageTitle>@_localizer["Title"]</PageTitle>
+<HeadingTitleComponent Title="@_localizer["Title"]" Description="@_localizer["Desc"]" />
+
+<MudSwitch @bind-Value="@TableSetting.Dense" Color="Color.Secondary">@_localizer["Dense"]</MudSwitch>
+<MudSwitch @bind-Value="@TableSetting.Striped" Color="Color.Tertiary">@_localizer["Striped"]</MudSwitch>
+<MudSwitch @bind-Value="@TableSetting.Bordered" Color="Color.Warning">@_localizer["Bordered"]</MudSwitch>

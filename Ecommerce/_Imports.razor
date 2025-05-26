@@ -25,6 +25,7 @@
 @using ECommerce.Infrastructure.Managers.Identity.Authentication
 @using Ecommerce.Infrastructure.Helpers
 @using ECommerce.Infrastructure.Managers.Preferences
+@using ECommerce.Infrastructure.Settings
 
 @attribute [Authorize]
 @inject LoadingStateContainer _loadingState
@@ -40,3 +41,4 @@
 @inject ISnackbar _snackBar
 @inject IDialogService _dialogService
 @inject ClientPreferenceManager _clientPreferenceManager
+@inject TableSetting TableSetting
