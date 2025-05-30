@@ -1,0 +1,11 @@
+﻿@code {
+    [Parameter] public RenderFragment? CenterIcon { get; set; }
+    [Parameter] public RenderFragment? Items { get; set; }
+}
+
+<div class="group relative grid grid-cols-3 gap-0 shadow-sm duration-500 hover:gap-2">
+    <h1 class="-translate-y-1/2 -translate-x-1/2 absolute left-1/2 top-1/2 z-10 duration-200 group-hover:hidden">
+        @CenterIcon
+    </h1>
+    @Items
+</div>
