@@ -42,14 +42,13 @@ public class ECommerceStateProvider(
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var savedToken = await _localStorage.GetItemAsync<string>(StorageConstants.Local.AuthToken);
-        var payload = await _localStorage.GetItemAsync<string>(StorageConstants.Local.PayloadToken);
-        if (string.IsNullOrWhiteSpace(savedToken) || string.IsNullOrWhiteSpace(payload))
+        var savedToken = await _localStorage.GetItemAsync<string>(StorageConstants.Local.AccessToken);
+        if (string.IsNullOrWhiteSpace(savedToken) || string.IsNullOrWhiteSpace(savedToken))
         {
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", savedToken);
-        var state = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(GetClaimsFromJwt(payload), "jwt")));
+        var state = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(GetClaimsFromJwt(savedToken), "jwt")));
         AuthenticationStateUser = state.User;
         return state;
     }

@@ -2,6 +2,5 @@
 
 public static class TokenEndpoints
 {
-    public static string Identity = "api/identity/token";
-    public static string Payload = "api/identity/payload";
+    public static string Identity = "api/token";
 }

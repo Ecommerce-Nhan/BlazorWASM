@@ -9,6 +9,7 @@ using SharedLibrary.Wrappers;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace ECommerce.Infrastructure.Managers.Identity.Authentication;
 
@@ -36,29 +37,27 @@ public class AuthenticationManager : IAuthenticationManager
 
     public async Task<IResponse> Login(TokenRequest model)
     {
-        var requestData = new Dictionary<string, string>
+        var requestData = new
         {
-            { "grant_type", "password" },
-            { "username", model.Email },
-            { "password", model.Password },
+            email = model.Email,
+            password = model.Password
         };
 
-        var content = new FormUrlEncodedContent(requestData);
-        var response = await _httpClient.PostAsync(TokenEndpoints.Identity, content);
-        var responseData = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        var response = await _httpClient.PostAsJsonAsync(TokenEndpoints.Identity, requestData);
+        var responseJson = await response.Content.ReadAsStringAsync();
+        //var responseData = await response.Content.ReadFromJsonAsync<TokenResponse>();
 
-        if (response.IsSuccessStatusCode && responseData is TokenResponse)
+        //if (response.IsSuccessStatusCode && responseData is TokenResponse)
+        if (response.IsSuccessStatusCode)
         {
-            var token = responseData.Access_Token;
-            var refreshToken = responseData.Refresh_Token;
-            var payloadToken = responseData.Payload_Token;
-            await _localStorage.SetItemAsync(StorageConstants.Local.AuthToken, token);
-            await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, refreshToken);
-            await _localStorage.SetItemAsync(StorageConstants.Local.PayloadToken, payloadToken);
+            //var token = responseData.Access_Token;
+            //var refreshToken = responseData.Refresh_Token;
+            await _localStorage.SetItemAsync(StorageConstants.Local.AccessToken, responseJson);
+            //await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, refreshToken);
 
             await ((ECommerceStateProvider)this._authenticationStateProvider).StateChangedAsync();
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", responseJson);
 
             return await Response.SuccessAsync();
         }
@@ -70,9 +69,8 @@ public class AuthenticationManager : IAuthenticationManager
 
     public async Task<IResponse> Logout()
     {
-        await _localStorage.RemoveItemAsync(StorageConstants.Local.AuthToken);
-        await _localStorage.RemoveItemAsync(StorageConstants.Local.RefreshToken);
-        await _localStorage.RemoveItemAsync(StorageConstants.Local.PayloadToken);
+        await _localStorage.RemoveItemAsync(StorageConstants.Local.AccessToken);
+        //await _localStorage.RemoveItemAsync(StorageConstants.Local.RefreshToken);
         ((ECommerceStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
         _httpClient.DefaultRequestHeaders.Authorization = null;
         return await Response.SuccessAsync();
@@ -80,30 +78,31 @@ public class AuthenticationManager : IAuthenticationManager
 
     public async Task<string> RefreshTokenAsync()
     {
-        var refreshToken = await _localStorage.GetItemAsync<string>(StorageConstants.Local.RefreshToken);
+        return string.Empty;
+        //var refreshToken = await _localStorage.GetItemAsync<string>(StorageConstants.Local.RefreshToken);
 
-        var requestData = new Dictionary<string, string>
-        {
-            { "grant_type", StorageConstants.Local.RefreshToken },
-            { StorageConstants.Local.RefreshToken, refreshToken ?? string.Empty }
-        };
+        //var requestData = new Dictionary<string, string>
+        //{
+        //    { "grant_type", StorageConstants.Local.RefreshToken },
+        //    { StorageConstants.Local.RefreshToken, refreshToken ?? string.Empty }
+        //};
 
-        var content = new FormUrlEncodedContent(requestData);
-        var response = await _httpClient.PostAsync(TokenEndpoints.Identity, content);
-        var responseData = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        //var content = new FormUrlEncodedContent(requestData);
+        //var response = await _httpClient.PostAsync(TokenEndpoints.Identity, content);
+        //var responseData = await response.Content.ReadFromJsonAsync<TokenResponse>();
 
-        if (response.IsSuccessStatusCode && responseData is TokenResponse)
-        {
-            await _localStorage.SetItemAsync(StorageConstants.Local.AuthToken, responseData.Access_Token);
-            await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, responseData.Refresh_Token);
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", responseData.Access_Token);
+        //if (response.IsSuccessStatusCode && responseData is TokenResponse)
+        //{
+        //    await _localStorage.SetItemAsync(StorageConstants.Local.AccessToken, responseData.Access_Token);
+        //    await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, responseData.Refresh_Token);
+        //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", responseData.Access_Token);
 
-            return responseData.Access_Token;
-        }
-        else
-        {
-            throw new Exception("Token refresh failed");
-        }
+        //    return responseData.Access_Token;
+        //}
+        //else
+        //{
+        //    throw new Exception("Token refresh failed");
+        //}
     }
 
     public async Task<string> TryRefreshToken()

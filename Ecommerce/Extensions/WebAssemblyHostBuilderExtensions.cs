@@ -61,7 +61,7 @@ public static class WebAssemblyHostBuilderExtensions
                {
                    client.DefaultRequestHeaders.AcceptLanguage.Clear();
                    client.DefaultRequestHeaders.AcceptLanguage.ParseAdd(CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName);
-                   client.BaseAddress = new Uri("http://ecommerce-alb-369747527.ap-southeast-1.elb.amazonaws.com");
+                   client.BaseAddress = new Uri("https://api.ecommerce.tranthanhnhan.click");
                })
                .AddHttpMessageHandler<AuthenticationHeaderHandler>();
         builder.Services.AddHttpClientInterceptor();

@@ -17,7 +17,7 @@ public class AuthenticationHeaderHandler : DelegatingHandler
     {
         if (request.Headers?.Authorization?.Scheme != "Bearer")
         {
-            var savedToken = await this.localStorage.GetItemAsync<string>(StorageConstants.Local.AuthToken);
+            var savedToken = await this.localStorage.GetItemAsync<string>(StorageConstants.Local.AccessToken);
 
             if (request.Headers is not null && !string.IsNullOrWhiteSpace(savedToken))
             {

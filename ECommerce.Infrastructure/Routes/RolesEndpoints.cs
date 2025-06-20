@@ -2,7 +2,7 @@
 
 public static class RolesEndpoints
 {
-    public static string Default = "api/user/role";
+    public static string Default = "api/v1/user/role";
     public static string Delete = Default;
     public static string GetAll = Default;
     public static string Create = Default;
