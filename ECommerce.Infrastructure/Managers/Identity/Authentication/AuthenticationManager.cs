@@ -8,6 +8,7 @@ using SharedLibrary.Response.Identity;
 using SharedLibrary.Wrappers;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -44,20 +45,18 @@ public class AuthenticationManager : IAuthenticationManager
         };
 
         var response = await _httpClient.PostAsJsonAsync(TokenEndpoints.Identity, requestData);
-        var responseJson = await response.Content.ReadAsStringAsync();
-        //var responseData = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        var responseData = await response.Content.ReadFromJsonAsync<TokenResponse>();
 
-        //if (response.IsSuccessStatusCode && responseData is TokenResponse)
-        if (response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode && responseData is TokenResponse)
         {
-            //var token = responseData.Access_Token;
-            //var refreshToken = responseData.Refresh_Token;
-            await _localStorage.SetItemAsync(StorageConstants.Local.AccessToken, responseJson);
-            //await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, refreshToken);
+            var token = responseData.AccessToken;
+            var refreshToken = responseData.RefreshToken;
+            await _localStorage.SetItemAsync(StorageConstants.Local.AccessToken, token);
+            await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, refreshToken);
 
             await ((ECommerceStateProvider)this._authenticationStateProvider).StateChangedAsync();
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", responseJson);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             return await Response.SuccessAsync();
         }
@@ -78,31 +77,29 @@ public class AuthenticationManager : IAuthenticationManager
 
     public async Task<string> RefreshTokenAsync()
     {
-        return string.Empty;
-        //var refreshToken = await _localStorage.GetItemAsync<string>(StorageConstants.Local.RefreshToken);
+        var token = await _localStorage.GetItemAsync<string>(StorageConstants.Local.RefreshToken);
+        var refreshToken = await _localStorage.GetItemAsync<string>(StorageConstants.Local.RefreshToken);
+        var requestData = new
+        {
+            Token = token,
+            RefreshToken = refreshToken
+        };
 
-        //var requestData = new Dictionary<string, string>
-        //{
-        //    { "grant_type", StorageConstants.Local.RefreshToken },
-        //    { StorageConstants.Local.RefreshToken, refreshToken ?? string.Empty }
-        //};
+        var response = await _httpClient.PostAsJsonAsync(TokenEndpoints.Identity, requestData);
+        var responseData = await response.Content.ReadFromJsonAsync<TokenResponse>();
 
-        //var content = new FormUrlEncodedContent(requestData);
-        //var response = await _httpClient.PostAsync(TokenEndpoints.Identity, content);
-        //var responseData = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        if (response.IsSuccessStatusCode && responseData is TokenResponse)
+        {
+            await _localStorage.SetItemAsync(StorageConstants.Local.AccessToken, responseData.AccessToken);
+            await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, responseData.RefreshToken);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", responseData.AccessToken);
 
-        //if (response.IsSuccessStatusCode && responseData is TokenResponse)
-        //{
-        //    await _localStorage.SetItemAsync(StorageConstants.Local.AccessToken, responseData.Access_Token);
-        //    await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, responseData.Refresh_Token);
-        //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", responseData.Access_Token);
-
-        //    return responseData.Access_Token;
-        //}
-        //else
-        //{
-        //    throw new Exception("Token refresh failed");
-        //}
+            return responseData.AccessToken;
+        }
+        else
+        {
+            throw new Exception("Token refresh failed");
+        }
     }
 
     public async Task<string> TryRefreshToken()
