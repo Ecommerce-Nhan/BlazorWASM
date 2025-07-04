@@ -63,33 +63,23 @@ public class ECommerceStateProvider(
 
         keyValuePairs.TryGetValue(ClaimTypes.Role, out var roles);
 
-        if (roles is JsonElement rolesJson)
+        if (roles is JsonElement rolesJson && rolesJson.ValueKind == JsonValueKind.Array)
         {
-            var parseRoles = JsonSerializer.Deserialize<string>(rolesJson);
-
-            if (parseRoles is string rolesString)
-            {
-                var roleArray = rolesString.Split(',')
-                                       .Select(role => role.Trim())
-                                       .ToArray();
-                claims.AddRange(roleArray.Select(role => new Claim(ClaimTypes.Role, role)));
-            }
+            claims.AddRange(rolesJson.EnumerateArray()
+                                     .SelectMany(r => r.GetString()?.Split(',', StringSplitOptions.RemoveEmptyEntries) ?? [])
+                                     .Select(r => new Claim(ClaimTypes.Role, r.Trim()))
+            );
 
             keyValuePairs.Remove(ClaimTypes.Role);
         }
 
         keyValuePairs.TryGetValue(ApplicationClaimTypes.Permission, out var permissions);
-        if (permissions is JsonElement permissionsJson)
+        if (permissions is JsonElement permissionsJson && permissionsJson.ValueKind == JsonValueKind.Array)
         {
-            var parsedPermissions = JsonSerializer.Deserialize<string>(permissionsJson);
-            if (parsedPermissions is string permissionsString)
-            {
-                var permissionArray = permissionsString.Split(',')
-                                      .Select(role => role.Trim())
-                                      .ToArray();
-
-                claims.AddRange(permissionArray.Select(permission => new Claim(ApplicationClaimTypes.Permission, permission)));
-            }
+            claims.AddRange(permissionsJson.EnumerateArray()
+                                     .SelectMany(r => r.GetString()?.Split(',', StringSplitOptions.RemoveEmptyEntries) ?? [])
+                                     .Select(r => new Claim(ApplicationClaimTypes.Permission, r.Trim()))
+            );
 
             keyValuePairs.Remove(ApplicationClaimTypes.Permission);
         }
