@@ -1,0 +1,32 @@
+version: 0.2
+
+env:
+  parameter-store:
+    GITHUB_USERNAME: GITHUB_USERNAME
+    GITHUB_TOKEN: GITHUB_TOKEN
+phases:
+  install:
+    runtime-versions:
+      nodejs: latest
+      dotnet: 9.0.301
+    commands:
+      - echo Installing source NPM dependencies...
+      - cd Ecommerce
+      - npm install
+      - dotnet nuget add source "https://nuget.pkg.github.com/nhanne/index.json" --name github --username "$GITHUB_USERNAME" --password "$GITHUB_TOKEN" --store-password-in-clear-text
+  pre_build:
+    commands:
+      - dotnet restore Ecommerce.csproj
+  build:
+    commands:
+      - echo Build started on `date`
+      - dotnet publish -c Release -o ./app/publish Ecommerce.csproj
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - aws s3 cp --recursive ./app/publish/wwwroot s3://ecommerce-nhan/
+artifacts:
+  files:
+    - wwwroot/**
+  base-directory: app/publish
+  discard-paths: no
