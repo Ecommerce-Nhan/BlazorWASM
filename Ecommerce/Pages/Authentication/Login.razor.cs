@@ -46,4 +46,16 @@ public partial class Login : ComponentBase
         _tokenModel.Email = "superadmin@gmail.com";
         _tokenModel.Password = "123Pa$$word!";
     }
+
+    private void LoginWithGoogle()
+    {
+        var googleOAuthUrl =
+            "https://accounts.google.com/o/oauth2/v2/auth" +
+            "?client_id=988669802858-5gb5ogt2h31tf9978481g91lggrhvkds.apps.googleusercontent.com" +
+            "&redirect_uri=https://ecommerce.tranthanhnhan.click" +
+            "&response_type=code" +
+            "&scope=openid";
+
+        _navigationManager.NavigateTo(googleOAuthUrl, true);
+    }
 }
