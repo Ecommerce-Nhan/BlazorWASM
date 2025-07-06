@@ -69,7 +69,7 @@ public class AuthenticationManager : IAuthenticationManager
     public async Task<IResponse> Logout()
     {
         await _localStorage.RemoveItemAsync(StorageConstants.Local.AccessToken);
-        //await _localStorage.RemoveItemAsync(StorageConstants.Local.RefreshToken);
+        await _localStorage.RemoveItemAsync(StorageConstants.Local.RefreshToken);
         ((ECommerceStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
         _httpClient.DefaultRequestHeaders.Authorization = null;
         return await Response.SuccessAsync();
