@@ -2,7 +2,7 @@
 
 public class TableSetting
 {
-    public bool Dense { get; set; } = true;
+    public bool Dense { get; set; } = false;
     public bool Striped { get; set; } = true;
-    public bool Bordered { get; set; } = true;
+    public bool Bordered { get; set; } = false;
 }
