@@ -159,21 +159,21 @@
             </button>
             <ul class="dropdown-menu z-30 hidden w-full max-w-[140px] rounded-md border border-gray-100 bg-white py-1.5 shadow-md shadow-black/5">
                 <li>
-                    <a href="#" class="flex items-center px-4 py-1.5 text-[13px] text-gray-600 hover:text-[#f84525] hover:bg-gray-50">Profile</a>
+                    <a href="#" class="flex items-center px-4 py-1.5 text-[13px] text-gray-600 hover:bg-gray-50 hover:text-[#f84525]">Profile</a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center px-4 py-1.5 text-[13px] text-gray-600 hover:text-[#f84525] hover:bg-gray-50">
+                    <a href="#" class="flex items-center px-4 py-1.5 text-[13px] text-gray-600 hover:bg-gray-50 hover:text-[#f84525]">
                         Settings
                     </a>
                 </li>
                 <li>
-                    <a role="menuitem" class="flex cursor-pointer items-center px-4 py-1.5 text-[13px] text-gray-600 hover:text-[#f84525] hover:bg-gray-50"
+                    <a role="menuitem" class="flex cursor-pointer items-center px-4 py-1.5 text-[13px] text-gray-600 hover:bg-gray-50 hover:text-[#f84525]"
                        @onclick="LogOut">
                         Log Out
                     </a>
                 </li>
-                <li>
-                    <a role="menuitem" class="flex cursor-pointer items-center px-4 py-1.5 text-[13px] text-gray-600 hover:text-[#f84525] hover:bg-gray-50"
+                @* <li>
+                    <a role="menuitem" class="flex cursor-pointer items-center px-4 py-1.5 text-[13px] text-gray-600 hover:bg-gray-50 hover:text-[#f84525]"
                        @onclick="@(async (e) => await ToggleDarkMode())">
                         <MudSwitch @bind-Value="_darkMode"
                                    Size="Size.Small"
@@ -181,7 +181,7 @@
                                    ThumbIcon="@(_darkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.LightMode)"
                                    ThumbIconColor="Color.Success"></MudSwitch>
                     </a>
-                </li>
+                </li> *@
             </ul>
         </li>
     </ul>
