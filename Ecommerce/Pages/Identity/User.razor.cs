@@ -13,6 +13,7 @@ public partial class User
 
     private ClaimsPrincipal _currentUser = default!;
     private bool _canCreate;
+    private bool _canEdit;
     private bool _canSearch;
     private bool _canViewRoles;
 
@@ -20,11 +21,12 @@ public partial class User
     {
         _currentUser = await _authenticationManager.CurrentUser();
         _canCreate = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Users.Create)).Succeeded;
+        _canEdit = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Users.Edit)).Succeeded;
         _canSearch = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Users.Search)).Succeeded;
         _canViewRoles = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Roles.View)).Succeeded;
     }
 
-    private async Task InvokeModal()
+    private async Task InvokeModal(string? id = null)
     {
         var parameters = new DialogParameters();
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
@@ -38,9 +40,9 @@ public partial class User
 
     private void ManageRoles(string userId, string? email)
     {
-        if (email == "3aef4452-5f15-42b5-8d5c-9eaab0b23476") 
+        if (email == "3aef4452-5f15-42b5-8d5c-9eaab0b23476")
             _snackBar.Add(_localizer["Not Allowed."], Severity.Error);
-        else 
+        else
             _navigationManager.NavigateTo($"/admin/user-roles/{userId}");
     }
 

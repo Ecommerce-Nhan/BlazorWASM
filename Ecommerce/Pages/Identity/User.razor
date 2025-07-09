@@ -9,10 +9,10 @@
 <MudTable T="@UserDto"
           @ref="_table"
           ServerData="ServerReload"
-          RowClass="cursor-pointer"
-          Height="600px"
-          Elevation="25"
           SortLabel="@_localizer["Sort"]"
+          RowClass="cursor-pointer"
+          Elevation="25"
+          Height="600px"
           Hover="true"
           Dense="@TableSetting.Dense"
           Bordered="@TableSetting.Bordered"
@@ -26,7 +26,7 @@
                 <MudButton Elevation="4"
                            Variant="Variant.Filled"
                            Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.Add"
+                           StartIcon="@Icons.Material.Filled.AddCircleOutline"
                            OnClick="(() => InvokeModal())"
                            Class="transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 shadow-md hover:shadow-xl rounded-xl px-4 py-2 text-white">
                     @_localizer["Create"]
@@ -72,7 +72,7 @@
         <MudTd DataLabel="@_localizer["Last Name"]">
             <MudHighlighter Text="@context.LastName" />
         </MudTd>
-        <MudTd DataLabel="@_localizer["UserName"]">
+        <MudTd DataLabel="@_localizer["Username"]">
             <MudHighlighter Text="@context.UserName" />
         </MudTd>
         <MudTd DataLabel="@_localizer["Email"]">
@@ -82,20 +82,29 @@
             <MudHighlighter Text="@context.PhoneNumber" />
         </MudTd>
         <MudTd DataLabel="@_localizer["Actions"]">
-            <MudMenu Label="@_localizer["Actions"]"
-                     Variant="Variant.Filled"
-                     IconColor="Color.Secondary"
-                     EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
-                     Class="horizontal-menu min-w-[9rem] max-w-xs rounded-xl bg-white shadow-md ring-1 ring-gray-200">
+            <MudStack Row=true Spacing="2" AlignItems="AlignItems.End" Justify="Justify.FlexEnd">
+                @* @if (_canEdit)
+                {
+                    <MudTooltip Text="@_localizer["Edit"]" Style="@($"background:{Colors.Yellow.Darken4}")">
+                        <MudIconButton Icon="@Icons.Material.Outlined.Edit"
+                                       Color="Color.Default"
+                                       Style="@($"color:{Colors.Yellow.Darken4}")"
+                                       OnClick="(() => InvokeModal(context.Id))"
+                                       Class="hover:scale-125 transition-transform duration-200 rounded-full bg-white shadow-md ring-1 ring-gray-200" />
+                    </MudTooltip>
+                } *@
                 @if (_canViewRoles)
                 {
-                    <MudMenuItem OnClick="(() => ManageRoles(context.Id, context.Email))" Class="before:hidden hover:before:flex before:justify-center before:items-center before:h-4 before:px-1 before:bg-black dark:before:bg-white dark:before:text-black before:text-white before:bg-opacity-50 before:absolute before:-top-7 before:rounded-lg hover:-translate-y-5 cursor-pointer hover:scale-125 bg-white dark:bg-[#191818] rounded-full p-2 px-3">
-                        <MudTooltip Text="@_localizer["Manage Roles"]" Style="@($"background:{Colors.Orange.Darken4}")">
-                            <MudIcon Icon="@Icons.Material.Outlined.EditNote" Style="@($"color:{Colors.Orange.Darken4}")" Size="Size.Medium" />
-                        </MudTooltip>
-                    </MudMenuItem>
+                    <MudTooltip Text="@_localizer["Manage Roles"]" Style="@($"background:{Colors.Orange.Darken4}")">
+                        <MudIconButton Icon="@Icons.Material.Outlined.Rule"
+                                       Color="Color.Default"
+                                       Style="@($"color:{Colors.Orange.Darken4}")"
+                                       OnClick="(() => ManageRoles(context.Id, context.Email))"
+                                       Class="hover:scale-125 transition-transform duration-200 rounded-full bg-white shadow-md ring-1 ring-gray-200" />
+                    </MudTooltip>
                 }
-            </MudMenu>
+            </MudStack>
+
         </MudTd>
     </RowTemplate>
     <PagerContent>

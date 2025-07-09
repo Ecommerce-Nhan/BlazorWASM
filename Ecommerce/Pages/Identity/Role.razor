@@ -5,17 +5,19 @@
 
 <HeadingTitleComponent Title="Roles" Description="Manage Roles." />
 
-<MudTable Hover="true"
+<MudTable Items="_roleList"
+          RowClass="cursor-pointer"
           Elevation="25"
-          Items="_roleList"
-          Dense="@_dense"
-          Bordered="@_bordered"
-          Striped="@_striped"
+          Height="600px"
+          Hover="true"
+          Dense="@TableSetting.Dense"
+          Bordered="@TableSetting.Bordered"
+          Striped="@TableSetting.Striped"
           FixedHeader="true"
           Virtualize="true"
           Filter="new Func<RoleResponse, bool>(Search)" @bind-role="_role">
     <ToolBarContent>
-        <div class="justify-center mud-text-align-center">
+        <div class="mud-text-align-center justify-center">
             @if (_canCreateRoles)
             {
                 <MudButton DisableElevation 
@@ -26,13 +28,6 @@
                     IconColor="Color.Surface">
                     @_localizer["Create"]
                 </MudButton>
-                <MudButton DisableElevation Variant="Variant.Filled" 
-                           OnClick="GetRolesAsync" 
-                           StartIcon="@Icons.Material.Filled.Refresh" 
-                           IconColor="Color.Surface" 
-                           Color="Color.Secondary">
-                                @_localizer["Reload"]
-                </MudButton>
             }
             else
             {
@@ -42,7 +37,7 @@
         <MudSpacer />
         @if (_canSearchRoles)
         {
-            <MudTextField @bind-Value="_searchString" Immediate="true" Placeholder="@_localizer["Search for Roles..."]" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-3"></MudTextField>
+            <MudTextField @bind-Value="_searchString" Immediate="true" Placeholder="@_localizer["Search for Roles..."]" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mb-3 mt-0"></MudTextField>
         }
     </ToolBarContent>
     <HeaderContent>
@@ -62,26 +57,38 @@
         <MudTd DataLabel="@_localizer["Actions"]" Style="text-align: right">
             @if (_canViewRoleClaims || _canEditRoles || _canDeleteRoles)
             {
-                <MudMenu Label="@_localizer["Actions"]" 
-                         Variant="Variant.Filled" 
-                         IconColor="Color.Secondary"
-                         EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
-                         DisableElevation="true" 
-                         Direction="Direction.Left" 
-                         OffsetX="true">
+                <MudStack Row=true Spacing="2" AlignItems="AlignItems.End" Justify="Justify.FlexEnd">
                     @if (_canViewRoleClaims)
                     {
-                        <MudMenuItem @onclick="@(() => ManagePermissions(@context.Id))">@_localizer["Manage Permission"]</MudMenuItem>
+                        <MudTooltip Text="@_localizer["Manage Permission"]" Style="@($"background:{Colors.Orange.Darken4}")">
+                            <MudIconButton Icon="@Icons.Material.Outlined.Rule"
+                                           Color="Color.Default"
+                                           Style="@($"color:{Colors.Orange.Darken4}")"
+                                           OnClick="(() => ManagePermissions(context.Id))"
+                                           Class="hover:scale-125 transition-transform duration-200 rounded-full bg-white shadow-md ring-1 ring-gray-200" />
+                        </MudTooltip>
                     }
                     @if (_canEditRoles)
                     {
-                        <MudMenuItem @onclick="@(() => InvokeModal(@context.Id))">@_localizer["Edit"]</MudMenuItem>
+                        <MudTooltip Text="@_localizer["Edit"]" Style="@($"background:{Colors.Yellow.Darken4}")">
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit"
+                                           Color="Color.Default"
+                                           Style="@($"color:{Colors.Yellow.Darken4}")"
+                                           OnClick="(() => InvokeModal(context.Id))"
+                                           Class="hover:scale-125 transition-transform duration-200 rounded-full bg-white shadow-md ring-1 ring-gray-200" />
+                        </MudTooltip>
                     }
                     @if (_canDeleteRoles)
                     {
-                        <MudMenuItem @onclick="@(() => Delete(@context.Id))">@_localizer["Delete"]</MudMenuItem>
+                        <MudTooltip Text="@_localizer["Delete"]" Style="@($"background:{Colors.Red.Darken4}")">
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete"
+                                           Color="Color.Default"
+                                           Style="@($"color:{Colors.Red.Darken4}")"
+                                           OnClick="(() => Delete(context.Id))"
+                                           Class="hover:scale-125 transition-transform duration-200 rounded-full bg-white shadow-md ring-1 ring-gray-200" />
+                        </MudTooltip>
                     }
-                </MudMenu>
+                </MudStack>
             }
             else
             {
@@ -96,11 +103,6 @@
             }
         </MudTd>
     </RowTemplate>
-    <FooterContent>
-        <MudSwitch @bind-Value="@_dense" Color="Color.Secondary" Class="ml-1">@_localizer["Dense"]</MudSwitch>
-        <MudSwitch @bind-Value="@_striped" Color="Color.Tertiary" Class="ml-1">@_localizer["Striped"]</MudSwitch>
-        <MudSwitch @bind-Value="@_bordered" Color="Color.Warning" Class="ml-1">@_localizer["Bordered"]</MudSwitch>
-    </FooterContent>
     <PagerContent>
         <TablePagerComponent />
     </PagerContent>

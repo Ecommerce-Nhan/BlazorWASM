@@ -17,12 +17,26 @@ else
             var allRoleClaimsInGroup = GroupedRoleClaims[group].ToList();
 
             <MudTabPanel Text="@group" BadgeData="@($"{selectedRoleClaimsInGroup.Count}/{allRoleClaimsInGroup.Count}")" Style="padding-right: 43px;" BadgeColor="@GetGroupBadgeColor(selectedRoleClaimsInGroup.Count, allRoleClaimsInGroup.Count)">
-                <MudTable Hover="true" Elevation="25" Items="@allRoleClaimsInGroup" Dense="@_dense" Bordered="@_bordered" Striped="@_striped" Filter="new Func<RoleClaimResponse, bool>(Search)" @bind-roleClaims="_roleClaims" CommitEditTooltip="@_localizer["Apply"]" @bind-SelectedItem="_selectedItem">
+                <MudTable Items="@allRoleClaimsInGroup" 
+                          Filter="new Func<RoleClaimResponse, bool>(Search)" 
+                          @bind-roleClaims="_roleClaims" 
+                          CommitEditTooltip="@_localizer["Apply"]" 
+                          @bind-SelectedItem="_selectedItem"
+                          RowClass="cursor-pointer"
+                          Elevation="25"
+                          Class="mt-2"
+                          Height="550px"
+                          Hover="true"
+                          Dense="@TableSetting.Dense"
+                          Bordered="@TableSetting.Bordered"
+                          Striped="@TableSetting.Striped"
+                          FixedHeader="true"
+                          Virtualize="true">
                     <ToolBarContent>
                         @if (_canEditRolePermissions)
                         {
                             <div class="mud-text-align-center justify-center">
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="SaveAsync" ButtonType="ButtonType.Submit">@_localizer["Update Role Permissions"]</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="SaveAsync" ButtonType="ButtonType.Submit">@_localizer["Update"]</MudButton>
                             </div>
                         }
                         <MudSpacer />
@@ -62,11 +76,6 @@ else
                         </MudTd>
                         <MudTd DataLabel="@_localizer["Status"]"><MudCheckBox @bind-Value="@context.Selected" Disabled="@(!_canEditRolePermissions)" Color="Color.Secondary" /></MudTd>
                     </RowEditingTemplate>
-                    <FooterContent>
-                        <MudSwitch @bind-Value="@_dense" Color="Color.Secondary" Style="margin-left: 5px;">@_localizer["Dense"]</MudSwitch>
-                        <MudSwitch @bind-Value="@_striped" Color="Color.Tertiary" Style="margin-left: 5px;">@_localizer["Striped"]</MudSwitch>
-                        <MudSwitch @bind-Value="@_bordered" Color="Color.Warning" Style="margin-left: 5px;">@_localizer["Bordered"]</MudSwitch>
-                    </FooterContent>
                     <PagerContent>
                         <TablePagerComponent />
                     </PagerContent>

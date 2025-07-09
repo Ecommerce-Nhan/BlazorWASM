@@ -15,10 +15,6 @@ public partial class Role
 
     private RoleResponse _role = new();
     private List<RoleResponse> _roleList = new();
-
-    private bool _dense = true;
-    private bool _striped = true;
-    private bool _bordered = true;
     private string _searchString = "";
 
     private ClaimsPrincipal _currentUser = default!;
