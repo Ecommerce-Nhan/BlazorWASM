@@ -1,0 +1,9 @@
+﻿@page "/login-google"
+@layout AuthLayout
+@attribute [AllowAnonymous]
+@inject Microsoft.Extensions.Localization.IStringLocalizer<LoginGoogle> _localizer
+
+@if (_status is not null)
+{
+    <p>@_status</p>
+}
