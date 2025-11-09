@@ -49,13 +49,16 @@ public partial class Login : ComponentBase
 
     private void LoginWithGoogle()
     {
-        var googleOAuthUrl =
-            "https://accounts.google.com/o/oauth2/v2/auth" +
-            "?client_id=988669802858-5gb5ogt2h31tf9978481g91lggrhvkds.apps.googleusercontent.com" +
-            "&redirect_uri=https://ecommerce.tranthanhnhan.click" +
-            "&response_type=code" +
-            "&scope=openid";
+        var clientId = "988669802858-5gb5ogt2h31tf9978481g91lggrhvkds.apps.googleusercontent.com";
+        var redirectUri = "https://ecommerce.tranthanhnhan.click";
+        var scope = "openid email profile";
+        var responseType = "code";
+        var authUrl = $"https://accounts.google.com/o/oauth2/v2/auth" +
+                      $"?client_id={clientId}" +
+                      $"&redirect_uri={Uri.EscapeDataString(redirectUri)}" +
+                      $"&response_type={responseType}" +
+                      $"&scope={Uri.EscapeDataString(scope)}";
 
-        _navigationManager.NavigateTo(googleOAuthUrl, true);
+        _navigationManager.NavigateTo(authUrl, forceLoad: true);
     }
 }
