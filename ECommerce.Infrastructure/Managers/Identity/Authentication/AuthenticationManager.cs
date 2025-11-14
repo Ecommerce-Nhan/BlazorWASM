@@ -38,19 +38,24 @@ public class AuthenticationManager : IAuthenticationManager
 
     public async Task<IResponse> Login(TokenRequest model)
     {
-        var requestData = new
+        var requestData = new Dictionary<string, string>
         {
-            email = model.Email,
-            password = model.Password
+            ["grant_type"] = "password",
+            ["username"] = model.Email,
+            ["password"] = model.Password,
+            ["client_id"] = "2ddc26af-9623-4f6d-9abb-9b412bae5ef5",
+            ["client_secret"] = "388D45FA-B36B-4988-BA59-B187D329C207"
         };
 
-        var response = await _httpClient.PostAsJsonAsync(TokenEndpoints.Identity, requestData);
+        var content = new FormUrlEncodedContent(requestData);
+
+        var response = await _httpClient.PostAsync(TokenEndpoints.Identity, content);
         var responseData = await response.Content.ReadFromJsonAsync<TokenResponse>();
 
         if (response.IsSuccessStatusCode && responseData is TokenResponse)
         {
-            var token = responseData.AccessToken;
-            var refreshToken = responseData.RefreshToken;
+            var token = responseData.Access_Token;
+            var refreshToken = responseData.Refresh_Token;
             await _localStorage.SetItemAsync(StorageConstants.Local.AccessToken, token);
             await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, refreshToken);
 
@@ -90,11 +95,11 @@ public class AuthenticationManager : IAuthenticationManager
 
         if (response.IsSuccessStatusCode && responseData is TokenResponse)
         {
-            await _localStorage.SetItemAsync(StorageConstants.Local.AccessToken, responseData.AccessToken);
-            await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, responseData.RefreshToken);
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", responseData.AccessToken);
+            await _localStorage.SetItemAsync(StorageConstants.Local.AccessToken, responseData.Access_Token);
+            await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, responseData.Refresh_Token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", responseData.Access_Token);
 
-            return responseData.AccessToken;
+            return responseData.Access_Token;
         }
         else
         {

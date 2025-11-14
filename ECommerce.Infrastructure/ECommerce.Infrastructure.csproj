@@ -12,9 +12,9 @@
 	<PackageReference Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.2.0" />
 	<PackageReference Include="AutoMapper" Version="11.0.0" />
 	<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-	<PackageReference Include="SharedLibrary" Version="1.1.5" />
+	<!--<PackageReference Include="SharedLibrary" Version="1.1.5" />-->
   </ItemGroup>
   <ItemGroup>
-    <!--<ProjectReference Include="..\..\SharedLibrary\src\SharedLibrary.csproj" />-->
+    <ProjectReference Include="..\..\..\BuildingBlocks\SharedLibrary\src\SharedLibrary.csproj" />
   </ItemGroup>
 </Project>

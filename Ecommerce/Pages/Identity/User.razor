@@ -1,6 +1,6 @@
 ﻿@page "/admin/user"
 @using SharedLibrary.Dtos.Users
-@attribute [Authorize(Policy = Permissions.Users.View)]
+@* @attribute [Authorize(Policy = Permissions.Users.View)] *@
 @inject Microsoft.Extensions.Localization.IStringLocalizer<User> _localizer
 
 <PageTitle>@_localizer["Title"]</PageTitle>
